@@ -1,7 +1,6 @@
 import asyncpraw
 import os
 from db import is_post_inserted, insert_post, PostEntry
-import traceback
 
 async def scrape_subs(subs: list[str]) -> None:
     async with asyncpraw.Reddit(
