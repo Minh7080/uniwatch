@@ -1,11 +1,9 @@
 import asyncpraw
-from typing import List
-import asyncio
 import os
 from db import is_post_inserted, insert_post, PostEntry
 import traceback
 
-async def scrape_subs(subs: List[str]):
+async def scrape_subs(subs: list[str]) -> None:
     async with asyncpraw.Reddit(
         client_id=os.getenv('REDDIT_ID'),
         client_secret=os.getenv('REDDIT_SECRET'),
@@ -14,16 +12,12 @@ async def scrape_subs(subs: List[str]):
         for sub in subs:
             try:
                 await poll_subreddit(sub, reddit)
-                # Add delay between subreddits to respect rate limits
-                await asyncio.sleep(1)
             except Exception as e:
                 print(f'Error scraping {sub}: {e}')
-                print(f'Error type: {type(e).__name__}')
-                traceback.print_exc()
                 continue
 
 
-async def poll_subreddit(subreddit_name: str, reddit: asyncpraw.Reddit):
+async def poll_subreddit(subreddit_name: str, reddit: asyncpraw.Reddit) -> None:
         sub = await reddit.subreddit(subreddit_name)
         
         async for post in sub.new(limit=50):
