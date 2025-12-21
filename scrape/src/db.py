@@ -1,5 +1,6 @@
 import sqlite3
 from typing import TypedDict
+from pathlib import Path
 
 class PostEntry(TypedDict, total = False):
     id: str
@@ -33,7 +34,10 @@ class PostDataEntry(TypedDict, total = False):
     offensive: bool
     emotion: str
 
-connection = sqlite3.connect('../../reddit.db')
+BASE_DIR = Path(__file__).resolve().parent
+DB_PATH = BASE_DIR.parents[1] / 'reddit.db'
+
+connection = sqlite3.connect(DB_PATH)
 cursor = connection.cursor()
 
 def is_post_inserted(post_id: str) -> bool:
