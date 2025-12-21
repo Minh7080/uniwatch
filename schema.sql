@@ -34,3 +34,6 @@ CREATE TABLE classified_post_data (
     classified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(post_id) REFERENCES raw_post(id) ON DELETE CASCADE
 );
+
+CREATE INDEX idx_raw_post_subreddit_created_utc_id
+ON raw_post (subreddit, created_utc desc, id desc);
