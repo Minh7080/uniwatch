@@ -10,7 +10,7 @@ export default function HeroSection() {
             className='bg-linear-to-r from-red-500 to-orange-500 bg-clip-text 
             text-transparent'
           >
-            Monitor and search
+            Monitor and Search
           </span>
           <br />
           Australian university subreddits
