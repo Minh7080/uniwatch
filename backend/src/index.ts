@@ -1,9 +1,15 @@
-import app from './server';
-import config from '../config.json';
+import env from './lib/loadEnv.js';
+import express from 'express';
+import cors from 'cors';
 
-// Start the application by listening to specific port
-const port = Number(process.env.PORT || config.PORT || 8080);
-app.listen(port, () => {
-  console.info('Express application started on port: ' + port);
+const app = express();
+
+app.use(cors({
+  origin: '*',
+}));
+
+app.use(express.json());
+
+app.listen(env.PORT, () => {
+  console.log(`Server started on port ${env.PORT}`);
 });
-
