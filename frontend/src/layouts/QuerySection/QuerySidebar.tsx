@@ -20,8 +20,8 @@ import { AlertCircleIcon } from 'lucide-react';
 import { ButtonGroup } from '@/components/ui/button-group';
 
 export default function QuerySidebar() {
-  const [sourcesChecked, setSourcesChecked] = useState(
-    () => Array(subreddits.length).fill(true)
+  const [sourcesChecked, setSourcesChecked] = useState<Map<string, boolean>>(
+    () => new Map(subreddits.map(sub => [sub.subreddit, true]))
   );
   const [fromDate, setFromDate] = useState<Date | undefined>();
   const [toDate, setToDate] = useState<Date | undefined>();
@@ -70,7 +70,7 @@ export default function QuerySidebar() {
 
       <SidebarContent>
         <SidebarGroupCollapsible groupLabel='Sources'>
-          {sourcesChecked.every(x => x === false) && (
+          {Array.from(sourcesChecked.values()).every(x => x === false) && (
             <SidebarMenuItem>
               <Alert variant='destructive' className='my-2'>
                 <AlertCircleIcon />
@@ -82,24 +82,20 @@ export default function QuerySidebar() {
           )}
           {subreddits.map((subreddit, idx) => (
             <SidebarMenuItem key={idx}>
-              <SidebarMenuButton>
+              <SidebarMenuButton 
+                onClick={() => setSourcesChecked(prev => {
+                  const copy = new Map(prev);
+                  copy.set(subreddit.subreddit, !prev.get(subreddit.subreddit));
+                  return copy;
+                })}>
                 <Label
-                  htmlFor={subreddit.subreddit}
-                  className='flex items-start gap-3 cursor-pointer'
+                  className='flex items-start gap-3'
                 >
-                  <Checkbox
-                    id={subreddit.subreddit}
-                    checked={sourcesChecked[idx]}
-                    onCheckedChange={checked =>
-                      setSourcesChecked(prev => {
-                        const copy = [...prev];
-                        copy[idx] = checked === true;
-                        return copy;
-                      })
-                    }
-                  />
-                  {`r/${subreddit.subreddit}`}
                 </Label>
+                <Checkbox
+                  checked={sourcesChecked.get(subreddit.subreddit)}
+                />
+                {`r/${subreddit.subreddit}`}
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
@@ -131,14 +127,12 @@ export default function QuerySidebar() {
             </ButtonGroup>
           </SidebarMenuItem>
 
-
           <DatePicker label='From' date={fromDate} setDate={setFromDate} />
           <DatePicker label='To' date={toDate} setDate={setToDate} />
         </SidebarGroupCollapsible>
 
         <SidebarGroupCollapsible groupLabel='Sorts'>
         </SidebarGroupCollapsible>
-
       </SidebarContent>
 
       <SidebarFooter>
