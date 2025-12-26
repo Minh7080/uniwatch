@@ -15,8 +15,8 @@ import formatDate from '@/lib/formatDate';
 
 type DatePicker = {
   label: string;
-  date: Date;
-  setDate: Dispatch<SetStateAction<Date>>;
+  date?: Date;
+  setDate: Dispatch<SetStateAction<Date | undefined>>;
 };
 
 export default function DatePicker({ label, date, setDate }: DatePicker) {
@@ -60,7 +60,7 @@ export default function DatePicker({ label, date, setDate }: DatePicker) {
               selected={date}
               captionLayout='dropdown'
               onSelect={date => {
-                if (date) setDate(date);
+                setDate(date);
                 setOpen(false);
               }}
               disabled={{

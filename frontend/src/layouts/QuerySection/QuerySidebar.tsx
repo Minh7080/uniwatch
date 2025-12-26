@@ -7,9 +7,9 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 
-import { Button } from '@/components/ui/button';
-
 import { subreddits } from './data';
+
+import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
@@ -17,13 +17,48 @@ import SidebarGroupCollapsible from './components/SidebarGroupCollapsible';
 import DatePicker from './components/DatePicker';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { AlertCircleIcon } from 'lucide-react';
+import { ButtonGroup } from '@/components/ui/button-group';
 
 export default function QuerySidebar() {
   const [sourcesChecked, setSourcesChecked] = useState(
     () => Array(subreddits.length).fill(true)
   );
-  const [fromDate, setFromDate] = useState<Date>(new Date());
-  const [toDate, setToDate] = useState<Date>(new Date());
+  const [fromDate, setFromDate] = useState<Date | undefined>();
+  const [toDate, setToDate] = useState<Date | undefined>();
+
+  const setDatePreset = (input: 'today' | 'week' | 'month' | 'year' | 'all') => {
+    switch (input) {
+      case 'today':
+        setFromDate(new Date());
+        setToDate(new Date());
+        break;
+      case 'week': {
+        const fromDate = new Date();
+        fromDate.setDate(fromDate.getDate() - 7);
+        setFromDate(fromDate);
+        setToDate(new Date());
+        break;
+      }
+      case 'month': {
+        const fromDate = new Date();
+        fromDate.setMonth(fromDate.getMonth() - 1);
+        setFromDate(fromDate);
+        setToDate(new Date());
+        break;
+      }
+      case 'year': {
+        const fromDate = new Date();
+        fromDate.setFullYear(fromDate.getFullYear() - 1);
+        setFromDate(fromDate);
+        setToDate(new Date());
+        break;
+      }
+      case 'all':
+        setFromDate(undefined);
+        setToDate(undefined);
+        break;
+    }
+  };
 
   return (
     <Sidebar contained>
@@ -46,27 +81,27 @@ export default function QuerySidebar() {
             </SidebarMenuItem>
           )}
           {subreddits.map((subreddit, idx) => (
-              <SidebarMenuItem key={idx}>
-                <SidebarMenuButton>
-                  <Label 
-                    htmlFor={subreddit.subreddit}
-                    className='flex items-start gap-3 cursor-pointer'
-                  >
-                    <Checkbox 
-                      id={subreddit.subreddit}
-                      checked={sourcesChecked[idx]}
-                      onCheckedChange={checked =>
-                        setSourcesChecked(prev => {
-                          const copy = [...prev];
-                          copy[idx] = checked === true;
-                          return copy;
-                        })
-                      }
-                    />
-                    {`r/${subreddit.subreddit}`}
-                  </Label>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+            <SidebarMenuItem key={idx}>
+              <SidebarMenuButton>
+                <Label
+                  htmlFor={subreddit.subreddit}
+                  className='flex items-start gap-3 cursor-pointer'
+                >
+                  <Checkbox
+                    id={subreddit.subreddit}
+                    checked={sourcesChecked[idx]}
+                    onCheckedChange={checked =>
+                      setSourcesChecked(prev => {
+                        const copy = [...prev];
+                        copy[idx] = checked === true;
+                        return copy;
+                      })
+                    }
+                  />
+                  {`r/${subreddit.subreddit}`}
+                </Label>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           ))}
         </SidebarGroupCollapsible>
 
@@ -81,6 +116,22 @@ export default function QuerySidebar() {
               </Alert>
             </SidebarMenuItem>
           )}
+          <SidebarMenuItem className='flex justify-center'>
+            <ButtonGroup>
+              <Button variant='outline' onClick={() => setDatePreset('today')}>Today</Button>
+              <Button variant='outline' onClick={() => setDatePreset('week')}>This Week</Button>
+            </ButtonGroup>
+          </SidebarMenuItem>
+
+          <SidebarMenuItem className='flex justify-center'>
+            <ButtonGroup>
+              <Button variant='outline' onClick={() => setDatePreset('month')}>This Month</Button>
+              <Button variant='outline' onClick={() => setDatePreset('year')}>This Year</Button>
+              <Button variant='outline' onClick={() => setDatePreset('all')}>All Time</Button>
+            </ButtonGroup>
+          </SidebarMenuItem>
+
+
           <DatePicker label='From' date={fromDate} setDate={setFromDate} />
           <DatePicker label='To' date={toDate} setDate={setToDate} />
         </SidebarGroupCollapsible>
@@ -93,7 +144,7 @@ export default function QuerySidebar() {
       <SidebarFooter>
         <div className='flex justify-between gap-4'>
           <Button variant='outline' className='hover:text-red-400'>Clear</Button>
-          <Button 
+          <Button
             variant='outline'
             className='
             grow
