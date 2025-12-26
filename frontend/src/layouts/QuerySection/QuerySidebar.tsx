@@ -2,37 +2,28 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
-  SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 
-import { ChevronRight } from 'lucide-react';
-
 import { Button } from '@/components/ui/button';
-
-import { 
-  Collapsible, 
-  CollapsibleContent, 
-  CollapsibleTrigger 
-} from '@radix-ui/react-collapsible';
 
 import { subreddits } from './data';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
-import SidebarGroupCollapsible from './SidebarGroupCollapsible';
+import SidebarGroupCollapsible from './components/SidebarGroupCollapsible';
+import DatePicker from './components/DatePicker';
+import { Alert, AlertTitle } from '@/components/ui/alert';
+import { AlertCircleIcon } from 'lucide-react';
 
 export default function QuerySidebar() {
   const [sourcesChecked, setSourcesChecked] = useState(
     () => Array(subreddits.length).fill(true)
   );
+  const [fromDate, setFromDate] = useState<Date>(new Date());
+  const [toDate, setToDate] = useState<Date>(new Date());
 
   return (
     <Sidebar contained>
@@ -44,10 +35,19 @@ export default function QuerySidebar() {
 
       <SidebarContent>
         <SidebarGroupCollapsible groupLabel='Sources'>
-          {subreddits.map((subreddit, idx) => {
-            return (
+          {sourcesChecked.every(x => x === false) && (
+            <SidebarMenuItem>
+              <Alert variant='destructive' className='my-2'>
+                <AlertCircleIcon />
+                <AlertTitle>
+                  At least one source must be selected
+                </AlertTitle>
+              </Alert>
+            </SidebarMenuItem>
+          )}
+          {subreddits.map((subreddit, idx) => (
               <SidebarMenuItem key={idx}>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton>
                   <Label 
                     htmlFor={subreddit.subreddit}
                     className='flex items-start gap-3 cursor-pointer'
@@ -56,7 +56,7 @@ export default function QuerySidebar() {
                       id={subreddit.subreddit}
                       checked={sourcesChecked[idx]}
                       onCheckedChange={checked =>
-                        setSourcesChecked((prev) => {
+                        setSourcesChecked(prev => {
                           const copy = [...prev];
                           copy[idx] = checked === true;
                           return copy;
@@ -67,17 +67,26 @@ export default function QuerySidebar() {
                   </Label>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-            );
-          })}
+          ))}
         </SidebarGroupCollapsible>
 
-        <SidebarGroup>
-          <SidebarGroupLabel>Filters</SidebarGroupLabel>
-        </SidebarGroup>
+        <SidebarGroupCollapsible groupLabel='Filters'>
+          {toDate && fromDate && toDate < fromDate && (
+            <SidebarMenuItem>
+              <Alert variant='destructive' className='my-2'>
+                <AlertCircleIcon />
+                <AlertTitle>
+                  To date must be after From date
+                </AlertTitle>
+              </Alert>
+            </SidebarMenuItem>
+          )}
+          <DatePicker label='From' date={fromDate} setDate={setFromDate} />
+          <DatePicker label='To' date={toDate} setDate={setToDate} />
+        </SidebarGroupCollapsible>
 
-        <SidebarGroup>
-          <SidebarGroupLabel>Sorts</SidebarGroupLabel>
-        </SidebarGroup>
+        <SidebarGroupCollapsible groupLabel='Sorts'>
+        </SidebarGroupCollapsible>
 
       </SidebarContent>
 
