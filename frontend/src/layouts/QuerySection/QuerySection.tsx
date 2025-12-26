@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 
 export default function QuerySection() {
   return (
-    <Card className='relative mx-auto w-full max-w-375 h-200 overflow-hidden px-4'>
+    <Card className='relative mx-auto w-full max-w-300 h-200 overflow-hidden px-4'>
       <SidebarProvider>
         <QuerySidebar />
         <div>
