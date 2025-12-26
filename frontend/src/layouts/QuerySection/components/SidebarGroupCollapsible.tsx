@@ -17,7 +17,7 @@ import type { ReactNode } from 'react';
 
 type SidebarGroupCollapsibleProp = {
   groupLabel: string,
-  children: ReactNode,
+  children?: ReactNode,
 };
 
 export default function SidebarGroupCollapsible(
@@ -29,7 +29,7 @@ export default function SidebarGroupCollapsible(
         <CollapsibleTrigger 
           className='group'
         >
-          <SidebarGroupLabel className='flex gap-1'>
+          <SidebarGroupLabel className='flex gap-1 hover:bg-sidebar-accent'>
             {groupLabel}
             <ChevronRight 
               className='transition-transform duration-200 group-data-[state=open]:rotate-90' 
