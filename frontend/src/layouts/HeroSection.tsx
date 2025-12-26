@@ -17,7 +17,7 @@ export default function HeroSection() {
         </h1>
         <p className='text-gray-400 text-center text-base w-full pt-2 max-w-200'>
           Uniwatch continuously collects public Reddit posts from Australian 
-          university communities, allowing you to query discussions.
+          university subreddits, allowing you to query discussions.
         </p>
       </div>
     </div>

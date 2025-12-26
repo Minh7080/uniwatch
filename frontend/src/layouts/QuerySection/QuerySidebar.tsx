@@ -27,6 +27,7 @@ import { subreddits } from './data';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
+import SidebarGroupCollapsible from './SidebarGroupCollapsible';
 
 export default function QuerySidebar() {
   const [sourcesChecked, setSourcesChecked] = useState(
@@ -42,51 +43,33 @@ export default function QuerySidebar() {
       </SidebarHeader>
 
       <SidebarContent>
-        <Collapsible>
-          <SidebarGroup>
-            <CollapsibleTrigger 
-              className='flex items-center justify-between w-full group'
-            >
-              <SidebarGroupLabel>Sources</SidebarGroupLabel>
-              <ChevronRight 
-                className='h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-90' 
-              />
-            </CollapsibleTrigger>
-            <CollapsibleContent 
-              className='data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up overflow-hidden'
-            >
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {subreddits.map((subreddit, idx) => {
-                    return (
-                      <SidebarMenuItem key={idx}>
-                        <SidebarMenuButton asChild>
-                          <Label 
-                            htmlFor={subreddit.subreddit}
-                            className='flex items-start gap-3 cursor-pointer'
-                          >
-                            <Checkbox 
-                              id={subreddit.subreddit}
-                              checked={sourcesChecked[idx]}
-                              onCheckedChange={checked =>
-                                setSourcesChecked((prev) => {
-                                  const copy = [...prev];
-                                  copy[idx] = checked === true;
-                                  return copy;
-                                })
-                              }
-                            />
-                            {`r/${subreddit.subreddit}`}
-                          </Label>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    );
-                  })}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </CollapsibleContent>
-          </SidebarGroup>
-        </Collapsible>
+        <SidebarGroupCollapsible groupLabel='Sources'>
+          {subreddits.map((subreddit, idx) => {
+            return (
+              <SidebarMenuItem key={idx}>
+                <SidebarMenuButton asChild>
+                  <Label 
+                    htmlFor={subreddit.subreddit}
+                    className='flex items-start gap-3 cursor-pointer'
+                  >
+                    <Checkbox 
+                      id={subreddit.subreddit}
+                      checked={sourcesChecked[idx]}
+                      onCheckedChange={checked =>
+                        setSourcesChecked((prev) => {
+                          const copy = [...prev];
+                          copy[idx] = checked === true;
+                          return copy;
+                        })
+                      }
+                    />
+                    {`r/${subreddit.subreddit}`}
+                  </Label>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
+        </SidebarGroupCollapsible>
 
         <SidebarGroup>
           <SidebarGroupLabel>Filters</SidebarGroupLabel>
