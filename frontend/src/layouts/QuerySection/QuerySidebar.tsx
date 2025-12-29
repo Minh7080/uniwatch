@@ -20,6 +20,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircleIcon } from 'lucide-react';
 import { ButtonGroup } from '@/components/ui/button-group';
 import SidebarItemCollapsible from './components/SidebarItemCollapsible';
+import SearchButton from './components/SearchButton';
 
 export default function QuerySidebar() {
   const [sourcesChecked, setSourcesChecked] = useState<Map<string, boolean>>(
@@ -156,27 +157,7 @@ export default function QuerySidebar() {
       <SidebarFooter>
         <div className='flex justify-between gap-4'>
           <Button variant='outline' className='hover:text-red-400 w-20'>Clear</Button>
-          <Button
-            variant='outline'
-            className='
-            grow
-            relative
-            overflow-hidden
-            bg-linear-to-r
-            from-red-500/50 to-orange-500/50
-            before:absolute
-            before:inset-0
-            before:bg-linear-to-r
-            before:from-red-500
-            before:to-orange-500
-            before:opacity-0
-            enabled:hover:before:opacity-100
-            before:transition-opacity
-            before:duration-300
-            '
-          >
-            <span className='relative z-10'>Search</span>
-          </Button>
+          <SearchButton />
         </div>
       </SidebarFooter>
     </Sidebar>
