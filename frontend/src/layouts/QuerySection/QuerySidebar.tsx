@@ -5,6 +5,7 @@ import {
   SidebarHeader,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 
 import { subreddits } from './data';
@@ -14,10 +15,11 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
 import SidebarGroupCollapsible from './components/SidebarGroupCollapsible';
-import DatePicker from './components/DatePicker';
-import { Alert, AlertTitle } from '@/components/ui/alert';
+import DatePicker from '../../components/DatePicker';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircleIcon } from 'lucide-react';
 import { ButtonGroup } from '@/components/ui/button-group';
+import SidebarItemCollapsible from './components/SidebarItemCollapsible';
 
 export default function QuerySidebar() {
   const [sourcesChecked, setSourcesChecked] = useState<Map<string, boolean>>(
@@ -25,6 +27,8 @@ export default function QuerySidebar() {
   );
   const [fromDate, setFromDate] = useState<Date | undefined>();
   const [toDate, setToDate] = useState<Date | undefined>();
+
+  const [openDateRanges, setOpenDateRanges] = useState<boolean>(true);
 
   const setDatePreset = (input: 'today' | 'week' | 'month' | 'year' | 'all') => {
     switch (input) {
@@ -82,7 +86,7 @@ export default function QuerySidebar() {
           )}
           {subreddits.map((subreddit, idx) => (
             <SidebarMenuItem key={idx}>
-              <SidebarMenuButton 
+              <SidebarMenuButton
                 onClick={() => setSourcesChecked(prev => {
                   const copy = new Map(prev);
                   copy.set(subreddit.subreddit, !prev.get(subreddit.subreddit));
@@ -101,43 +105,57 @@ export default function QuerySidebar() {
           ))}
         </SidebarGroupCollapsible>
 
-        <SidebarGroupCollapsible groupLabel='Filters'>
-          {toDate && fromDate && toDate < fromDate && (
-            <SidebarMenuItem>
-              <Alert variant='destructive' className='my-2'>
-                <AlertCircleIcon />
-                <AlertTitle>
-                  To date must be after From date
-                </AlertTitle>
-              </Alert>
-            </SidebarMenuItem>
-          )}
-          <SidebarMenuItem className='flex justify-center'>
-            <ButtonGroup>
-              <Button variant='outline' onClick={() => setDatePreset('today')}>Today</Button>
-              <Button variant='outline' onClick={() => setDatePreset('week')}>This Week</Button>
-            </ButtonGroup>
-          </SidebarMenuItem>
+        <SidebarGroupCollapsible groupLabel='Filters' defaultOpen>
+          <SidebarItemCollapsible 
+            label='Date ranges' 
+            open={openDateRanges} 
+            setOpen={setOpenDateRanges}
+          >
+            {toDate && fromDate && toDate < fromDate && (
+              <SidebarMenuSubItem>
+                <Alert variant='destructive' className='my-2'>
+                  <AlertCircleIcon />
+                  <AlertTitle>
+                    Invalid date range
+                  </AlertTitle>
+                  <AlertDescription>
+                    <p>The 'To' date cannot be earlier than the 'From' date.</p>
+                  </AlertDescription>
+                </Alert>
+              </SidebarMenuSubItem>
+            )}
+            <SidebarMenuSubItem className='flex justify-center'>
+              <ButtonGroup>
+                <Button variant='outline' onClick={() => setDatePreset('today')}>Today</Button>
+                <Button variant='outline' onClick={() => setDatePreset('week')}>This Week</Button>
+              </ButtonGroup>
+            </SidebarMenuSubItem>
 
-          <SidebarMenuItem className='flex justify-center'>
-            <ButtonGroup>
-              <Button variant='outline' onClick={() => setDatePreset('month')}>This Month</Button>
-              <Button variant='outline' onClick={() => setDatePreset('year')}>This Year</Button>
-              <Button variant='outline' onClick={() => setDatePreset('all')}>All Time</Button>
-            </ButtonGroup>
-          </SidebarMenuItem>
+            <SidebarMenuSubItem className='flex justify-center'>
+              <ButtonGroup>
+                <Button variant='outline' onClick={() => setDatePreset('month')}>This Month</Button>
+                <Button variant='outline' onClick={() => setDatePreset('year')}>This Year</Button>
+                <Button variant='outline' onClick={() => setDatePreset('all')}>All Time</Button>
+              </ButtonGroup>
+            </SidebarMenuSubItem>
 
-          <DatePicker label='From' date={fromDate} setDate={setFromDate} />
-          <DatePicker label='To' date={toDate} setDate={setToDate} />
+            <SidebarMenuSubItem className='ml-2'>
+              <DatePicker label='From' date={fromDate} setDate={setFromDate} />
+            </SidebarMenuSubItem>
+            <SidebarMenuSubItem className='ml-2'>
+              <DatePicker label='To' date={toDate} setDate={setToDate} />
+            </SidebarMenuSubItem>
+          </SidebarItemCollapsible>
+
         </SidebarGroupCollapsible>
 
-        <SidebarGroupCollapsible groupLabel='Sorts'>
+        <SidebarGroupCollapsible groupLabel='Sorts' defaultOpen>
         </SidebarGroupCollapsible>
       </SidebarContent>
 
       <SidebarFooter>
         <div className='flex justify-between gap-4'>
-          <Button variant='outline' className='hover:text-red-400'>Clear</Button>
+          <Button variant='outline' className='hover:text-red-400 w-20'>Clear</Button>
           <Button
             variant='outline'
             className='

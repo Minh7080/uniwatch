@@ -15,20 +15,19 @@ import {
 
 import type { ReactNode } from 'react';
 
-type SidebarGroupCollapsibleProp = {
+type SidebarGroupCollapsibleProps = {
   groupLabel: string,
+  defaultOpen?: boolean,
   children?: ReactNode,
 };
 
 export default function SidebarGroupCollapsible(
-  {groupLabel, children}: SidebarGroupCollapsibleProp
+  {groupLabel, defaultOpen = false, children}: SidebarGroupCollapsibleProps
 ) {
   return (
-    <Collapsible>
+    <Collapsible defaultOpen={defaultOpen}>
       <SidebarGroup>
-        <CollapsibleTrigger 
-          className='group'
-        >
+        <CollapsibleTrigger className='group'>
           <SidebarGroupLabel className='flex gap-1 hover:bg-sidebar-accent'>
             {groupLabel}
             <ChevronRight 
