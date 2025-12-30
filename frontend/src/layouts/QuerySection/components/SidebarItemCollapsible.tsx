@@ -5,7 +5,7 @@ import {
 } from '@/components/ui/sidebar';
 
 import { ChevronRight } from 'lucide-react';
-import type { ReactNode, Dispatch, SetStateAction } from 'react';
+import type { ReactNode } from 'react';
 import {
   Collapsible,
   CollapsibleContent,
@@ -16,16 +16,16 @@ type SidebarItemCollapsibleProps = {
   label: string,
   children?: ReactNode,
   open: boolean,
-  setOpen: Dispatch<SetStateAction<boolean>>;
+  onClick: () => void;
 }
 
-export default function SidebarItemCollapsible({ label, children, open, setOpen }: 
+export default function SidebarItemCollapsible({ label, children, open, onClick }: 
   SidebarItemCollapsibleProps) {
   return (
     <Collapsible open={open}>
       <SidebarMenuItem>
         <CollapsibleTrigger asChild className='group'>
-          <SidebarMenuButton onClick={() => setOpen(prev => !prev)}>
+          <SidebarMenuButton onClick={onClick}>
             {label}
             <ChevronRight
               className='transition-transform duration-200 group-data-[state=open]:rotate-90'

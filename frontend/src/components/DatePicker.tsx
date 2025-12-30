@@ -9,26 +9,26 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 
-import { useState, type Dispatch, type SetStateAction } from 'react';
+import { useState } from 'react';
 import formatDate from '@/lib/formatDate';
 
-type DatePicker = {
-  label: string;
-  date?: Date;
-  setDate: Dispatch<SetStateAction<Date | undefined>>;
+type DatePickerProps = {
+  label: string,
+  date?: Date,
+  onSelect: (date?: Date) => void,
 };
 
-export default function DatePicker({ label, date, setDate }: DatePicker) {
+export default function DatePicker({ label, date, onSelect }: DatePickerProps) {
   const [open, setOpen] = useState(false);
 
   return (
-    <Label className='px-1 flex justify-between'>
+    <Label className='px-1 flex flex-col items-start'>
       {label}
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             variant='outline'
-            className='w-50 justify-between font-normal'
+            className='w-30 justify-between font-normal'
           >
             {date ? formatDate(date) : 'None'}
             <ChevronDownIcon />
@@ -45,7 +45,8 @@ export default function DatePicker({ label, date, setDate }: DatePicker) {
             selected={date}
             captionLayout='dropdown'
             onSelect={date => {
-              setDate(date);
+              // setDate(date);
+              onSelect(date);
               setOpen(false);
             }}
             disabled={{

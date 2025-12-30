@@ -19,57 +19,31 @@ import SidebarGroupCollapsible from './components/SidebarGroupCollapsible';
 import DatePicker from '../../components/DatePicker';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircleIcon } from 'lucide-react';
-import { ButtonGroup } from '@/components/ui/button-group';
 import SidebarItemCollapsible from './components/SidebarItemCollapsible';
 import SearchButton from './components/SearchButton';
+import DateRangesPresetSelect from './components/DateRangesPresetSelect';
+import getDatePreset, { type setDatePresetInput } from './getDatePreset';
 
 export default function QuerySidebar() {
   const [sourcesChecked, setSourcesChecked] = useState<Map<string, boolean>>(
     () => new Map(subreddits.map(sub => [sub.subreddit, true]))
   );
-  const [fromDate, setFromDate] = useState<Date | undefined>();
-  const [toDate, setToDate] = useState<Date | undefined>();
 
-  const [openDateRanges, setOpenDateRanges] = useState<boolean>(true);
+  const [openSections, setOpenSections] = useState({
+    dateRanges: true,
+  });
 
-  const setDatePreset = (input: 'today' | 'week' | 'month' | 'year' | 'all') => {
-    switch (input) {
-      case 'today':
-        setFromDate(new Date());
-        setToDate(new Date());
-        break;
-      case 'week': {
-        const fromDate = new Date();
-        fromDate.setDate(fromDate.getDate() - 7);
-        setFromDate(fromDate);
-        setToDate(new Date());
-        break;
-      }
-      case 'month': {
-        const fromDate = new Date();
-        fromDate.setMonth(fromDate.getMonth() - 1);
-        setFromDate(fromDate);
-        setToDate(new Date());
-        break;
-      }
-      case 'year': {
-        const fromDate = new Date();
-        fromDate.setFullYear(fromDate.getFullYear() - 1);
-        setFromDate(fromDate);
-        setToDate(new Date());
-        break;
-      }
-      case 'all':
-        setFromDate(undefined);
-        setToDate(undefined);
-        break;
-    }
-  };
+  const [dateRanges, setDateRanges] = useState<{ from?: Date, to?: Date }>({
+    from: undefined,
+    to: undefined,
+  });
+
+  const [dateSelect, setDateSelect] = useState<setDatePresetInput>('all');
 
   return (
     <Sidebar contained>
       <SidebarHeader className='relative'>
-        <SidebarTrigger className='absolute md:hidden'/>
+        <SidebarTrigger className='absolute md:hidden' />
         <h3 className='text-center font-bold'>
           Query Posts
         </h3>
@@ -109,12 +83,12 @@ export default function QuerySidebar() {
         </SidebarGroupCollapsible>
 
         <SidebarGroupCollapsible groupLabel='Filters' defaultOpen>
-          <SidebarItemCollapsible 
-            label='Date ranges' 
-            open={openDateRanges} 
-            setOpen={setOpenDateRanges}
+          <SidebarItemCollapsible
+            label='Date ranges'
+            open={openSections.dateRanges}
+            onClick={() => setOpenSections(prev => ({ ...prev, dateRanges: !prev.dateRanges }))}
           >
-            {toDate && fromDate && toDate < fromDate && (
+            {dateRanges.to && dateRanges.from && dateRanges.to < dateRanges.from && (
               <SidebarMenuSubItem>
                 <Alert variant='destructive' className='my-2'>
                   <AlertCircleIcon />
@@ -127,27 +101,31 @@ export default function QuerySidebar() {
                 </Alert>
               </SidebarMenuSubItem>
             )}
-            <SidebarMenuSubItem className='flex justify-center'>
-              <ButtonGroup>
-                <Button variant='outline' onClick={() => setDatePreset('today')}>Today</Button>
-                <Button variant='outline' onClick={() => setDatePreset('week')}>This Week</Button>
-              </ButtonGroup>
+
+            <SidebarMenuSubItem className='ml-2 flex justify-end'>
+              <DateRangesPresetSelect
+                value={dateSelect}
+                onValueChange={value => {
+                  setDateSelect(value);
+                  setDateRanges(getDatePreset(value));
+                }}
+              />
             </SidebarMenuSubItem>
 
-            <SidebarMenuSubItem className='flex justify-center'>
-              <ButtonGroup>
-                <Button variant='outline' onClick={() => setDatePreset('month')}>This Month</Button>
-                <Button variant='outline' onClick={() => setDatePreset('year')}>This Year</Button>
-                <Button variant='outline' onClick={() => setDatePreset('all')}>All Time</Button>
-              </ButtonGroup>
-            </SidebarMenuSubItem>
-
-            <SidebarMenuSubItem className='ml-2'>
-              <DatePicker label='From' date={fromDate} setDate={setFromDate} />
-            </SidebarMenuSubItem>
-            <SidebarMenuSubItem className='ml-2'>
-              <DatePicker label='To' date={toDate} setDate={setToDate} />
-            </SidebarMenuSubItem>
+            {dateSelect === 'custom' && (
+              <SidebarMenuSubItem className='ml-2 flex pt-4'>
+                <DatePicker
+                  label='From'
+                  date={dateRanges.from}
+                  onSelect={date => setDateRanges(prev => ({ ...prev, from: date }))}
+                />
+                <DatePicker
+                  label='To'
+                  date={dateRanges.to}
+                  onSelect={date => setDateRanges(prev => ({ ...prev, to: date }))}
+                />
+              </SidebarMenuSubItem>
+            )}
           </SidebarItemCollapsible>
 
         </SidebarGroupCollapsible>
