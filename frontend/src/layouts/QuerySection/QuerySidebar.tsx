@@ -6,6 +6,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSubItem,
+  SidebarTrigger,
 } from '@/components/ui/sidebar';
 
 import { subreddits } from './data';
@@ -67,7 +68,8 @@ export default function QuerySidebar() {
 
   return (
     <Sidebar contained>
-      <SidebarHeader>
+      <SidebarHeader className='relative'>
+        <SidebarTrigger className='absolute md:hidden'/>
         <h3 className='text-center font-bold'>
           Query Posts
         </h3>
