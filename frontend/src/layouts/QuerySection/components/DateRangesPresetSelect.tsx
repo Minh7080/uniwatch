@@ -23,7 +23,7 @@ export default function DateRangesPresetSelect({ value, onValueChange }:
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>Presets</SelectLabel>
+          <SelectLabel>Date ranges</SelectLabel>
           <SelectItem value='today'>Today</SelectItem>
           <SelectItem value='week'>This week</SelectItem>
           <SelectItem value='month'>This month</SelectItem>

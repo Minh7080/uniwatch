@@ -23,6 +23,8 @@ import SidebarItemCollapsible from './components/SidebarItemCollapsible';
 import SearchButton from './components/SearchButton';
 import DateRangesPresetSelect from './components/DateRangesPresetSelect';
 import getDatePreset, { type setDatePresetInput } from './getDatePreset';
+import MinMaxInput from './components/MinMaxInput';
+import SliderInput from './components/SliderInput';
 
 export default function QuerySidebar() {
   const [sourcesChecked, setSourcesChecked] = useState<Map<string, boolean>>(
@@ -31,6 +33,14 @@ export default function QuerySidebar() {
 
   const [openSections, setOpenSections] = useState({
     dateRanges: true,
+    engagement: true,
+    classification: true,
+  });
+
+  const [enableSections, setEnableSection] = useState({
+    upvotes: false,
+    comments: false,
+    upvoteRatio: false,
   });
 
   const [dateRanges, setDateRanges] = useState<{ from?: Date, to?: Date }>({
@@ -39,6 +49,7 @@ export default function QuerySidebar() {
   });
 
   const [dateSelect, setDateSelect] = useState<setDatePresetInput>('all');
+  const [upvoteRatio, setUpvoteRatio] = useState<number>(0.5);
 
   return (
     <Sidebar contained>
@@ -128,6 +139,57 @@ export default function QuerySidebar() {
             )}
           </SidebarItemCollapsible>
 
+          <SidebarItemCollapsible
+            label='Engagement'
+            open={openSections.engagement}
+            onClick={() => setOpenSections(prev => ({ 
+              ...prev, engagement: !prev.engagement 
+            }))}
+            className='flex flex-col gap-4'
+          >
+            <MinMaxInput 
+              label='Number of Upvotes' 
+              checked={enableSections.upvotes} 
+              onClick={() => setEnableSection(prev => ({
+                ...prev, upvotes: !enableSections.upvotes
+              }))} 
+            />
+
+            <MinMaxInput 
+              label='Number of Comments' 
+              checked={enableSections.comments} 
+              onClick={() => setEnableSection(prev => ({
+                ...prev, comments: !enableSections.comments
+              }))} 
+            />
+
+            <SliderInput 
+              label='Upvote Ratio'
+              checked={enableSections.upvoteRatio} 
+              onClick={() => setEnableSection(prev => ({
+                ...prev, upvoteRatio: !enableSections.upvoteRatio
+              }))}
+              value={upvoteRatio}
+              setValue={setUpvoteRatio}
+            />
+
+          </SidebarItemCollapsible>
+
+          <SidebarItemCollapsible
+            label='Classification'
+            open={openSections.classification}
+            onClick={() => setOpenSections(prev => ({ 
+              ...prev, classification: !prev.classification 
+            }))}
+            className='flex flex-col gap-4'
+          >
+            <header>hello</header>
+            <header>hello</header>
+            <header>hello</header>
+            <header>hello</header>
+            <header>hello</header>
+          </SidebarItemCollapsible>
+
         </SidebarGroupCollapsible>
 
         <SidebarGroupCollapsible groupLabel='Sorts' defaultOpen>
@@ -136,7 +198,7 @@ export default function QuerySidebar() {
 
       <SidebarFooter>
         <div className='flex justify-between gap-4'>
-          <Button variant='outline' className='hover:text-red-400 w-20'>Clear</Button>
+          <Button variant='outline' className='hover:text-red-400 w-20'>Reset</Button>
           <SearchButton />
         </div>
       </SidebarFooter>

@@ -16,10 +16,11 @@ type SidebarItemCollapsibleProps = {
   label: string,
   children?: ReactNode,
   open: boolean,
-  onClick: () => void;
+  onClick: () => void,
+  className?: string
 }
 
-export default function SidebarItemCollapsible({ label, children, open, onClick }: 
+export default function SidebarItemCollapsible({ label, children, open, onClick, className }: 
   SidebarItemCollapsibleProps) {
   return (
     <Collapsible open={open}>
@@ -35,7 +36,7 @@ export default function SidebarItemCollapsible({ label, children, open, onClick 
         <CollapsibleContent
           className='data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up overflow-hidden'
         >
-          <SidebarMenuSub>
+          <SidebarMenuSub className={className}>
             {children}
           </SidebarMenuSub>
         </CollapsibleContent>
