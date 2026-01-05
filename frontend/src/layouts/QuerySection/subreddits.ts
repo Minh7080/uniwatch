@@ -147,7 +147,7 @@ const subreddits= [
     subreddit: 'UWS',
     name: 'University of Western Sydney' 
   }
-];
+] as const;
 
 export {
   subreddits

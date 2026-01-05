@@ -9,7 +9,8 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar';
 
-import { subreddits } from './data';
+import { subreddits } from './subreddits';
+import { classificationLabels } from './classificationLabels';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -25,10 +26,15 @@ import DateRangesPresetSelect from './components/DateRangesPresetSelect';
 import getDatePreset, { type setDatePresetInput } from './getDatePreset';
 import MinMaxInput from './components/MinMaxInput';
 import SliderInput from './components/SliderInput';
+import MultipleSelectionInput from './components/MulipleSelectionInput';
 
 export default function QuerySidebar() {
   const [sourcesChecked, setSourcesChecked] = useState<Map<string, boolean>>(
     () => new Map(subreddits.map(sub => [sub.subreddit, true]))
+  );
+
+  const [topics, setTopics] = useState<Map<string, boolean>>(
+    () => new Map(classificationLabels.map(label => [label.key, false]))
   );
 
   const [openSections, setOpenSections] = useState({
@@ -41,6 +47,7 @@ export default function QuerySidebar() {
     upvotes: false,
     comments: false,
     upvoteRatio: false,
+    classification: false,
   });
 
   const [dateRanges, setDateRanges] = useState<{ from?: Date, to?: Date }>({
@@ -142,30 +149,30 @@ export default function QuerySidebar() {
           <SidebarItemCollapsible
             label='Engagement'
             open={openSections.engagement}
-            onClick={() => setOpenSections(prev => ({ 
-              ...prev, engagement: !prev.engagement 
+            onClick={() => setOpenSections(prev => ({
+              ...prev, engagement: !prev.engagement
             }))}
             className='flex flex-col gap-4'
           >
-            <MinMaxInput 
-              label='Number of Upvotes' 
-              checked={enableSections.upvotes} 
+            <MinMaxInput
+              label='Number of Upvotes'
+              checked={enableSections.upvotes}
               onClick={() => setEnableSection(prev => ({
                 ...prev, upvotes: !enableSections.upvotes
-              }))} 
+              }))}
             />
 
-            <MinMaxInput 
-              label='Number of Comments' 
-              checked={enableSections.comments} 
+            <MinMaxInput
+              label='Number of Comments'
+              checked={enableSections.comments}
               onClick={() => setEnableSection(prev => ({
                 ...prev, comments: !enableSections.comments
-              }))} 
+              }))}
             />
 
-            <SliderInput 
+            <SliderInput
               label='Upvote Ratio'
-              checked={enableSections.upvoteRatio} 
+              checked={enableSections.upvoteRatio}
               onClick={() => setEnableSection(prev => ({
                 ...prev, upvoteRatio: !enableSections.upvoteRatio
               }))}
@@ -178,16 +185,38 @@ export default function QuerySidebar() {
           <SidebarItemCollapsible
             label='Classification'
             open={openSections.classification}
-            onClick={() => setOpenSections(prev => ({ 
-              ...prev, classification: !prev.classification 
+            onClick={() => setOpenSections(prev => ({
+              ...prev, classification: !prev.classification
             }))}
             className='flex flex-col gap-4'
           >
-            <header>hello</header>
-            <header>hello</header>
-            <header>hello</header>
-            <header>hello</header>
-            <header>hello</header>
+
+            <MultipleSelectionInput
+              label='Topic'
+              checked={enableSections.classification}
+              onClick={() => setEnableSection(prev => ({
+                ...prev, classification: !enableSections.classification
+              }))}
+            >
+              {classificationLabels.map((label, idx) => {
+                const Icon = label.icon;
+                return (
+                  <Button key={idx} 
+                    variant={topics.get(label.key) ? 'default': 'outline'}
+                    size='sm'
+                    className='px-2! py-1! border!'
+                    onClick={() => setTopics(prev => {
+                      const copy = new Map(prev);
+                      copy.set(label.key, !prev.get(label.key));
+                      return copy;
+                    })}
+                  >
+                    <Icon />
+                    {label.name}
+                  </Button>
+                );
+              })}
+            </MultipleSelectionInput>
           </SidebarItemCollapsible>
 
         </SidebarGroupCollapsible>
