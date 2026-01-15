@@ -11,7 +11,6 @@ import {
 
 import { subreddits } from './subreddits';
 import { classificationLabels } from './classificationLabels';
-
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
@@ -28,6 +27,8 @@ import MinMaxInput from './components/MinMaxInput';
 import SliderInput from './components/SliderInput';
 import { SelectItem } from '@/components/ui/select';
 import DisalableInput from './components/DisalableInput';
+import { ButtonGroup } from '@/components/ui/button-group';
+import { type Sentiment, sentimentOptions } from './sentimentOptions';
 
 export default function QuerySidebar() {
   const [sourcesChecked, setSourcesChecked] = useState<Map<string, boolean>>(
@@ -38,9 +39,15 @@ export default function QuerySidebar() {
     () => new Map(classificationLabels.map(label => [label.key, false]))
   );
 
+  const [sentiment, setSentiment] = useState<Sentiment>({
+    positive: false,
+    neutral: false,
+    negative: false
+  });
+
   const [openSections, setOpenSections] = useState({
     dateRanges: true,
-    engagement: true,
+    engagement: false,
     classification: true,
   });
 
@@ -49,6 +56,7 @@ export default function QuerySidebar() {
     comments: false,
     upvoteRatio: false,
     classification: false,
+    sentiment: false,
   });
 
   const [dateRanges, setDateRanges] = useState<{ from?: Date, to?: Date }>({
@@ -211,8 +219,8 @@ export default function QuerySidebar() {
               {classificationLabels.map((label, idx) => {
                 const Icon = label.icon;
                 return (
-                  <Button key={idx} 
-                    variant={topics.get(label.key) ? 'default': 'outline'}
+                  <Button key={idx}
+                    variant={topics.get(label.key) ? 'default' : 'outline'}
                     size='sm'
                     className='px-1.5! py-0.5! border! cursor-pointer'
                     onClick={() => setTopics(prev => {
@@ -227,6 +235,39 @@ export default function QuerySidebar() {
                 );
               })}
             </DisalableInput>
+
+            <DisalableInput
+              label='Sentiment'
+              checked={enableSections.sentiment}
+              className='flex justify-center'
+              onClick={() => setEnableSection(prev => ({
+                ...prev, sentiment: !enableSections.sentiment
+              }))}
+            >
+              <ButtonGroup className='pl-6'>
+                {sentimentOptions.map((element, idx) => {
+                    const Icon = element.icon;
+                    return (
+                      <Button
+                        key={idx}
+                        variant={sentiment[element.value] ? 'default' : 'outline'}
+                        disabled={!enableSections.sentiment}
+                        size='sm'
+                        className='px-1.5! py-0.5! border! cursor-pointer'
+                        onClick={() => setSentiment(prev => ({
+                          ...prev,
+                          [element.value]: !prev[element.value]
+                        }))}
+                      >
+                        <Icon />
+                        {element.label}
+                      </Button>
+                    );
+                  })}
+              </ButtonGroup>
+
+            </DisalableInput>
+
           </SidebarItemCollapsible>
 
         </SidebarGroupCollapsible>
