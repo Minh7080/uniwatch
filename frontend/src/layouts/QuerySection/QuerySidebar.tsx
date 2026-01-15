@@ -22,11 +22,12 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircleIcon } from 'lucide-react';
 import SidebarItemCollapsible from './components/SidebarItemCollapsible';
 import SearchButton from './components/SearchButton';
-import DateRangesPresetSelect from './components/DateRangesPresetSelect';
+import PresetSelect from './components/PresetSelect';
 import getDatePreset, { type setDatePresetInput } from './getDatePreset';
 import MinMaxInput from './components/MinMaxInput';
 import SliderInput from './components/SliderInput';
-import MultipleSelectionInput from './components/MulipleSelectionInput';
+import { SelectItem } from '@/components/ui/select';
+import DisalableInput from './components/DisalableInput';
 
 export default function QuerySidebar() {
   const [sourcesChecked, setSourcesChecked] = useState<Map<string, boolean>>(
@@ -121,13 +122,21 @@ export default function QuerySidebar() {
             )}
 
             <SidebarMenuSubItem className='ml-2 flex justify-end'>
-              <DateRangesPresetSelect
+              <PresetSelect
+                label='Date ranges'
                 value={dateSelect}
-                onValueChange={value => {
-                  setDateSelect(value);
-                  setDateRanges(getDatePreset(value));
+                onValueChange={(value) => {
+                  setDateSelect(value as setDatePresetInput);
+                  setDateRanges(getDatePreset(value as setDatePresetInput));
                 }}
-              />
+              >
+                <SelectItem value='today'>Today</SelectItem>
+                <SelectItem value='week'>This week</SelectItem>
+                <SelectItem value='month'>This month</SelectItem>
+                <SelectItem value='year'>This year</SelectItem>
+                <SelectItem value='all'>All time</SelectItem>
+                <SelectItem value='custom'>Custom</SelectItem>
+              </PresetSelect>
             </SidebarMenuSubItem>
 
             {dateSelect === 'custom' && (
@@ -191,8 +200,9 @@ export default function QuerySidebar() {
             className='flex flex-col gap-4'
           >
 
-            <MultipleSelectionInput
+            <DisalableInput
               label='Topic'
+              className='flex flex-wrap gap-2 justify-center'
               checked={enableSections.classification}
               onClick={() => setEnableSection(prev => ({
                 ...prev, classification: !enableSections.classification
@@ -204,7 +214,7 @@ export default function QuerySidebar() {
                   <Button key={idx} 
                     variant={topics.get(label.key) ? 'default': 'outline'}
                     size='sm'
-                    className='px-2! py-1! border!'
+                    className='px-1.5! py-0.5! border! cursor-pointer'
                     onClick={() => setTopics(prev => {
                       const copy = new Map(prev);
                       copy.set(label.key, !prev.get(label.key));
@@ -216,7 +226,7 @@ export default function QuerySidebar() {
                   </Button>
                 );
               })}
-            </MultipleSelectionInput>
+            </DisalableInput>
           </SidebarItemCollapsible>
 
         </SidebarGroupCollapsible>

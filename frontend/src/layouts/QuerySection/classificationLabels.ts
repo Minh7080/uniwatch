@@ -69,7 +69,7 @@ export const classificationLabels = [
   { 
     key: 'other_hobbies',
     name: 'Hobbies',
-    icon: lucide.Layers,
+    icon: lucide.Puzzle,
   },
   { 
     key: 'relationships',
