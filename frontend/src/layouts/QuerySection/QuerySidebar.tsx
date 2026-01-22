@@ -31,6 +31,7 @@ import DisalableInput from './components/DisalableInput';
 import { ButtonGroup } from '@/components/ui/button-group';
 import { type Sentiment, sentimentOptions } from './sentimentOptions';
 import { Input } from '@/components/ui/input';
+import SidebarSeparator from './components/SidebarSeparator';
 
 export default function QuerySidebar() {
   const [sourcesChecked, setSourcesChecked] = useState<Map<string, boolean>>(
@@ -56,6 +57,7 @@ export default function QuerySidebar() {
     content: true,
     affect: false,
     engagement: false,
+    toxicity: false,
   });
 
   const [enableSections, setEnableSection] = useState({
@@ -67,6 +69,8 @@ export default function QuerySidebar() {
     emotions: false,
     sentiment: false,
     irony: false,
+    hateSpeech: false,
+    offensive: false,
   });
 
   const [dateRanges, setDateRanges] = useState<{ from?: Date, to?: Date }>({
@@ -77,6 +81,8 @@ export default function QuerySidebar() {
   const [dateSelect, setDateSelect] = useState<setDatePresetInput>('all');
   const [upvoteRatio, setUpvoteRatio] = useState<number>(0.5);
   const [ironySelect, setIronySelect] = useState<boolean>(false);
+  const [hateSpeechSelect, setHateSpeechSelect] = useState<boolean>(false);
+  const [offensiveSelect, setOffensiveSelect] = useState<boolean>(false);
 
   return (
     <Sidebar contained>
@@ -119,6 +125,8 @@ export default function QuerySidebar() {
             </SidebarMenuItem>
           ))}
         </SidebarGroupCollapsible>
+
+        <SidebarSeparator />
 
         <SidebarGroupCollapsible groupLabel='Filters' defaultOpen>
           <SidebarItemCollapsible
@@ -220,7 +228,7 @@ export default function QuerySidebar() {
                 ...prev, searchTerm: !enableSections.searchTerm
               }))}
             >
-              <Input placeholder='Search Term'/>
+              <Input placeholder='Search Term' />
             </DisalableInput>
 
           </SidebarItemCollapsible>
@@ -271,24 +279,24 @@ export default function QuerySidebar() {
             >
               <ButtonGroup className='pl-6'>
                 {sentimentOptions.map((element, idx) => {
-                    const Icon = element.icon;
-                    return (
-                      <Button
-                        key={idx}
-                        variant={sentiment[element.value] ? 'default' : 'outline'}
-                        disabled={!enableSections.sentiment}
-                        size='sm'
-                        className='px-1.5! py-0.5! border! cursor-pointer'
-                        onClick={() => setSentiment(prev => ({
-                          ...prev,
-                          [element.value]: !prev[element.value]
-                        }))}
-                      >
-                        <Icon />
-                        {element.label}
-                      </Button>
-                    );
-                  })}
+                  const Icon = element.icon;
+                  return (
+                    <Button
+                      key={idx}
+                      variant={sentiment[element.value] ? 'default' : 'outline'}
+                      disabled={!enableSections.sentiment}
+                      size='sm'
+                      className='px-1.5! py-0.5! border! cursor-pointer'
+                      onClick={() => setSentiment(prev => ({
+                        ...prev,
+                        [element.value]: !prev[element.value]
+                      }))}
+                    >
+                      <Icon />
+                      {element.label}
+                    </Button>
+                  );
+                })}
               </ButtonGroup>
             </DisalableInput>
 
@@ -350,8 +358,58 @@ export default function QuerySidebar() {
 
           </SidebarItemCollapsible>
 
+          <SidebarItemCollapsible
+            label='Toxicity'
+            open={openSections.toxicity}
+            onClick={() => setOpenSections(prev => ({
+              ...prev, toxicity: !prev.toxicity
+            }))}
+            className='flex flex-col gap-4'
+          >
+            <DisalableInput
+              label='Hate Speech'
+              checked={enableSections.hateSpeech}
+              className='flex justify-center'
+              onClick={() => setEnableSection(prev => ({
+                ...prev, hateSpeech: !enableSections.hateSpeech
+              }))}
+            >
+              <PresetSelect
+                label='Irony'
+                value={hateSpeechSelect ? 'true' : 'false'}
+                onValueChange={value => {
+                  setHateSpeechSelect(value === 'true');
+                }}
+              >
+                <SelectItem value='true'>True</SelectItem>
+                <SelectItem value='false'>False</SelectItem>
+              </PresetSelect>
+            </DisalableInput>
+
+            <DisalableInput
+              label='Offensive'
+              checked={enableSections.offensive}
+              className='flex justify-center'
+              onClick={() => setEnableSection(prev => ({
+                ...prev, offensive: !enableSections.offensive
+              }))}
+            >
+              <PresetSelect
+                label='Irony'
+                value={offensiveSelect ? 'true' : 'false'}
+                onValueChange={value => {
+                  setOffensiveSelect(value === 'true');
+                }}
+              >
+                <SelectItem value='true'>True</SelectItem>
+                <SelectItem value='false'>False</SelectItem>
+              </PresetSelect>
+            </DisalableInput>
+
+          </SidebarItemCollapsible>
         </SidebarGroupCollapsible>
 
+        <SidebarSeparator />
 
         <SidebarGroupCollapsible groupLabel='Sorts' defaultOpen>
         </SidebarGroupCollapsible>
