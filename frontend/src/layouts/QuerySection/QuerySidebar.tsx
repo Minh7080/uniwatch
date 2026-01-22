@@ -90,10 +90,14 @@ export default function QuerySidebar({ onQueryChange }: QuerySidebarProps = {}) 
   const [hateSpeechSelect, setHateSpeechSelect] = useState<boolean>(false);
   const [offensiveSelect, setOffensiveSelect] = useState<boolean>(false);
   const [sortSelect, setSortSelect] = useState<sortbySelectOptions>('best');
-  const [upvotesMin, setUpvotesMin] = useState<number | undefined>(undefined);
-  const [upvotesMax, setUpvotesMax] = useState<number | undefined>(undefined);
-  const [commentsMin, setCommentsMin] = useState<number | undefined>(undefined);
-  const [commentsMax, setCommentsMax] = useState<number | undefined>(undefined);
+  const [upvotes, setUpvotes] = useState<{ min?: number, max?: number }>({
+    min: undefined,
+    max: undefined,
+  });
+  const [comments, setComments] = useState<{ min?: number, max?: number }>({
+    min: undefined,
+    max: undefined,
+  });
   const [searchTerm, setSearchTerm] = useState<string>('');
 
   const query = useMemo<queryType>(() => {
@@ -160,18 +164,18 @@ export default function QuerySidebar({ onQueryChange }: QuerySidebarProps = {}) 
     }
 
     // Upvotes
-    if (enableSections.upvotes && (upvotesMin !== undefined || upvotesMax !== undefined)) {
+    if (enableSections.upvotes && (upvotes.min !== undefined || upvotes.max !== undefined)) {
       newQuery.upvotes = {
-        min: upvotesMin ?? 0,
-        max: upvotesMax ?? Number.MAX_SAFE_INTEGER,
+        min: upvotes.min ?? 0,
+        max: upvotes.max ?? Number.MAX_SAFE_INTEGER,
       };
     }
 
     // Comments
-    if (enableSections.comments && (commentsMin !== undefined || commentsMax !== undefined)) {
+    if (enableSections.comments && (comments.min !== undefined || comments.max !== undefined)) {
       newQuery.comments = {
-        min: commentsMin ?? 0,
-        max: commentsMax ?? Number.MAX_SAFE_INTEGER,
+        min: comments.min ?? 0,
+        max: comments.max ?? Number.MAX_SAFE_INTEGER,
       };
     }
 
@@ -200,17 +204,49 @@ export default function QuerySidebar({ onQueryChange }: QuerySidebarProps = {}) 
     emotionsSelected,
     sentiment,
     ironySelect,
-    upvotesMin,
-    upvotesMax,
-    commentsMin,
-    commentsMax,
+    upvotes,
+    comments,
     upvoteRatio,
     hateSpeechSelect,
     offensiveSelect,
     sortSelect,
   ]);
 
-  // Notify parent when query changes
+  const validationErrors = useMemo(() => {
+    const errors: {
+      sources: boolean,
+      dateRange: boolean;
+      upvotes: boolean;
+      comments: boolean;
+    } = {
+      sources: false,
+      dateRange: false,
+      upvotes: false,
+      comments: false,
+    };
+
+    // Date range validation
+    if (dateRanges.to && dateRanges.from && dateRanges.to < dateRanges.from) {
+      errors.dateRange = true;
+    }
+
+    // Upvotes validation
+    if (upvotes.max !== undefined && upvotes.min !== undefined && upvotes.max < upvotes.min) {
+      errors.upvotes = true;
+    }
+
+    // Comments validation
+    if (comments.max !== undefined && comments.min !== undefined && comments.max < comments.min) {
+      errors.comments = true;
+    }
+
+    if (Array.from(sourcesChecked.values()).every(x => x === false)) {
+      errors.sources = true;
+    }
+
+    return errors;
+  }, [dateRanges, upvotes, comments, sourcesChecked]);
+
   useEffect(() => {
     onQueryChange?.(query);
   }, [query, onQueryChange]);
@@ -222,20 +258,37 @@ export default function QuerySidebar({ onQueryChange }: QuerySidebarProps = {}) 
         <h3 className='text-center font-bold'>
           Query Posts
         </h3>
+        {Object.values(validationErrors).some(x => x) && (
+          <Alert variant='destructive' className='my-2'>
+            <AlertCircleIcon />
+            <AlertTitle>
+              Invalid query input
+            </AlertTitle>
+            <AlertDescription>
+              <ul className='list-disc'>
+                {validationErrors.sources && (<li>
+                  <strong>Sources:</strong> At least one source must be selected.
+                </li>)}
+
+                {validationErrors.dateRange && (<li>
+                  <strong>Date ranges:</strong> 'From' date must come before 'To' date.
+                </li>)}
+
+                {validationErrors.upvotes && (<li>
+                  <strong>Number of upvotes:</strong> 'Min' value must be less than 'Max' value.
+                </li>)}
+
+                {validationErrors.comments && (<li>
+                  <strong>Number of comments:</strong> 'Min' value must be less than 'Max' value.
+                </li>)}
+              </ul>
+            </AlertDescription>
+          </Alert>
+        )}
       </SidebarHeader>
 
       <SidebarContent className='gap-0'>
         <SidebarGroupCollapsible groupLabel='Sources'>
-          {Array.from(sourcesChecked.values()).every(x => x === false) && (
-            <SidebarMenuItem>
-              <Alert variant='destructive' className='my-2'>
-                <AlertCircleIcon />
-                <AlertTitle>
-                  At least one source must be selected
-                </AlertTitle>
-              </Alert>
-            </SidebarMenuItem>
-          )}
           {subreddits.map((subreddit, idx) => (
             <SidebarMenuItem key={idx}>
               <SidebarMenuButton
@@ -265,20 +318,6 @@ export default function QuerySidebar({ onQueryChange }: QuerySidebarProps = {}) 
             open={openSections.dateRanges}
             onClick={() => setOpenSections(prev => ({ ...prev, dateRanges: !prev.dateRanges }))}
           >
-            {dateRanges.to && dateRanges.from && dateRanges.to < dateRanges.from && (
-              <SidebarMenuSubItem>
-                <Alert variant='destructive' className='my-2'>
-                  <AlertCircleIcon />
-                  <AlertTitle>
-                    Invalid date range
-                  </AlertTitle>
-                  <AlertDescription>
-                    <p>The 'To' date cannot be earlier than the 'From' date.</p>
-                  </AlertDescription>
-                </Alert>
-              </SidebarMenuSubItem>
-            )}
-
             <SidebarMenuSubItem className='ml-2 flex justify-end'>
               <PresetSelect
                 label='Date ranges'
@@ -359,8 +398,8 @@ export default function QuerySidebar({ onQueryChange }: QuerySidebarProps = {}) 
                 ...prev, searchTerm: !enableSections.searchTerm
               }))}
             >
-              <Input 
-                placeholder='Search Term' 
+              <Input
+                placeholder='Search Term'
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -465,16 +504,17 @@ export default function QuerySidebar({ onQueryChange }: QuerySidebarProps = {}) 
             }))}
             className='flex flex-col gap-4'
           >
+
             <MinMaxInput
               label='Number of Upvotes'
               checked={enableSections.upvotes}
               onClick={() => setEnableSection(prev => ({
                 ...prev, upvotes: !enableSections.upvotes
               }))}
-              minValue={upvotesMin}
-              maxValue={upvotesMax}
-              onMinChange={setUpvotesMin}
-              onMaxChange={setUpvotesMax}
+              minValue={upvotes.min}
+              maxValue={upvotes.max}
+              onMinChange={(value) => setUpvotes(prev => ({ ...prev, min: value }))}
+              onMaxChange={(value) => setUpvotes(prev => ({ ...prev, max: value }))}
             />
 
             <MinMaxInput
@@ -483,10 +523,10 @@ export default function QuerySidebar({ onQueryChange }: QuerySidebarProps = {}) 
               onClick={() => setEnableSection(prev => ({
                 ...prev, comments: !enableSections.comments
               }))}
-              minValue={commentsMin}
-              maxValue={commentsMax}
-              onMinChange={setCommentsMin}
-              onMaxChange={setCommentsMax}
+              minValue={comments.min}
+              maxValue={comments.max}
+              onMinChange={(value) => setComments(prev => ({ ...prev, min: value }))}
+              onMaxChange={(value) => setComments(prev => ({ ...prev, max: value }))}
             />
 
             <SliderInput
@@ -577,7 +617,7 @@ export default function QuerySidebar({ onQueryChange }: QuerySidebarProps = {}) 
       <SidebarFooter>
         <div className='flex justify-between gap-4'>
           <Button variant='outline' className='hover:text-red-400 w-20'>Reset</Button>
-          <SearchButton />
+          <SearchButton disabled={Object.values(validationErrors).some(error => error)} />
         </div>
       </SidebarFooter>
     </Sidebar>
