@@ -66,6 +66,7 @@ export default function QuerySidebar() {
     searchTerm: false,
     emotions: false,
     sentiment: false,
+    irony: false,
   });
 
   const [dateRanges, setDateRanges] = useState<{ from?: Date, to?: Date }>({
@@ -75,6 +76,7 @@ export default function QuerySidebar() {
 
   const [dateSelect, setDateSelect] = useState<setDatePresetInput>('all');
   const [upvoteRatio, setUpvoteRatio] = useState<number>(0.5);
+  const [ironySelect, setIronySelect] = useState<boolean>(false);
 
   return (
     <Sidebar contained>
@@ -288,6 +290,26 @@ export default function QuerySidebar() {
                     );
                   })}
               </ButtonGroup>
+            </DisalableInput>
+
+            <DisalableInput
+              label='Irony'
+              checked={enableSections.irony}
+              className='flex justify-center'
+              onClick={() => setEnableSection(prev => ({
+                ...prev, irony: !enableSections.irony
+              }))}
+            >
+              <PresetSelect
+                label='Irony'
+                value={ironySelect ? 'true' : 'false'}
+                onValueChange={value => {
+                  setIronySelect(value === 'true');
+                }}
+              >
+                <SelectItem value='true'>True</SelectItem>
+                <SelectItem value='false'>False</SelectItem>
+              </PresetSelect>
             </DisalableInput>
 
           </SidebarItemCollapsible>
