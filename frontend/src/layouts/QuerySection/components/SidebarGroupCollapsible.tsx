@@ -26,7 +26,7 @@ export default function SidebarGroupCollapsible(
 ) {
   return (
     <Collapsible defaultOpen={defaultOpen}>
-      <SidebarGroup>
+      <SidebarGroup className='p-1'>
         <CollapsibleTrigger className='group'>
           <SidebarGroupLabel className='flex gap-1 hover:bg-sidebar-accent'>
             {groupLabel}

@@ -11,6 +11,7 @@ import {
 
 import { subreddits } from './subreddits';
 import { classificationLabels } from './classificationLabels';
+import { emotions } from './emotions';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
@@ -29,6 +30,7 @@ import { SelectItem } from '@/components/ui/select';
 import DisalableInput from './components/DisalableInput';
 import { ButtonGroup } from '@/components/ui/button-group';
 import { type Sentiment, sentimentOptions } from './sentimentOptions';
+import { Input } from '@/components/ui/input';
 
 export default function QuerySidebar() {
   const [sourcesChecked, setSourcesChecked] = useState<Map<string, boolean>>(
@@ -39,6 +41,10 @@ export default function QuerySidebar() {
     () => new Map(classificationLabels.map(label => [label.key, false]))
   );
 
+  const [emotionsSelected, setEmotionsSelected] = useState<Map<string, boolean>>(
+    () => new Map(emotions.map(emotion => [emotion.key, false]))
+  );
+
   const [sentiment, setSentiment] = useState<Sentiment>({
     positive: false,
     neutral: false,
@@ -47,15 +53,18 @@ export default function QuerySidebar() {
 
   const [openSections, setOpenSections] = useState({
     dateRanges: true,
+    content: true,
+    affect: false,
     engagement: false,
-    classification: true,
   });
 
   const [enableSections, setEnableSection] = useState({
     upvotes: false,
     comments: false,
     upvoteRatio: false,
-    classification: false,
+    topic: false,
+    searchTerm: false,
+    emotions: false,
     sentiment: false,
   });
 
@@ -76,7 +85,7 @@ export default function QuerySidebar() {
         </h3>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className='gap-0'>
         <SidebarGroupCollapsible groupLabel='Sources'>
           {Array.from(sourcesChecked.values()).every(x => x === false) && (
             <SidebarMenuItem>
@@ -163,6 +172,126 @@ export default function QuerySidebar() {
             )}
           </SidebarItemCollapsible>
 
+
+          <SidebarItemCollapsible
+            label='Content'
+            open={openSections.content}
+            onClick={() => setOpenSections(prev => ({
+              ...prev, content: !prev.content
+            }))}
+            className='flex flex-col gap-4'
+          >
+
+            <DisalableInput
+              label='Topic'
+              className='flex flex-wrap gap-2 justify-center'
+              checked={enableSections.topic}
+              onClick={() => setEnableSection(prev => ({
+                ...prev, topic: !enableSections.topic
+              }))}
+            >
+              {classificationLabels.map((label, idx) => {
+                const Icon = label.icon;
+                return (
+                  <Button key={idx}
+                    variant={topics.get(label.key) ? 'default' : 'outline'}
+                    size='sm'
+                    className='px-1.5! py-0.5! border! cursor-pointer'
+                    onClick={() => setTopics(prev => {
+                      const copy = new Map(prev);
+                      copy.set(label.key, !prev.get(label.key));
+                      return copy;
+                    })}
+                  >
+                    <Icon />
+                    {label.name}
+                  </Button>
+                );
+              })}
+            </DisalableInput>
+
+            <DisalableInput
+              label='Search term'
+              className='flex flex-wrap gap-2 justify-center'
+              checked={enableSections.searchTerm}
+              onClick={() => setEnableSection(prev => ({
+                ...prev, searchTerm: !enableSections.searchTerm
+              }))}
+            >
+              <Input placeholder='Search Term'/>
+            </DisalableInput>
+
+          </SidebarItemCollapsible>
+
+          <SidebarItemCollapsible
+            label='Affect'
+            open={openSections.affect}
+            onClick={() => setOpenSections(prev => ({
+              ...prev, affect: !prev.affect
+            }))}
+            className='flex flex-col gap-4'
+          >
+            <DisalableInput
+              label='Emotion'
+              className='flex flex-wrap gap-2 justify-center'
+              checked={enableSections.emotions}
+              onClick={() => setEnableSection(prev => ({
+                ...prev, emotions: !enableSections.emotions
+              }))}
+            >
+              {emotions.map((emotion, idx) => {
+                const Icon = emotion.icon;
+                return (
+                  <Button key={idx}
+                    variant={emotionsSelected.get(emotion.key) ? 'default' : 'outline'}
+                    size='sm'
+                    className='px-1.5! py-0.5! border! cursor-pointer'
+                    onClick={() => setEmotionsSelected(prev => {
+                      const copy = new Map(prev);
+                      copy.set(emotion.key, !prev.get(emotion.key));
+                      return copy;
+                    })}
+                  >
+                    <Icon />
+                    {emotion.name}
+                  </Button>
+                );
+              })}
+            </DisalableInput>
+
+            <DisalableInput
+              label='Sentiment'
+              checked={enableSections.sentiment}
+              className='flex justify-center'
+              onClick={() => setEnableSection(prev => ({
+                ...prev, sentiment: !enableSections.sentiment
+              }))}
+            >
+              <ButtonGroup className='pl-6'>
+                {sentimentOptions.map((element, idx) => {
+                    const Icon = element.icon;
+                    return (
+                      <Button
+                        key={idx}
+                        variant={sentiment[element.value] ? 'default' : 'outline'}
+                        disabled={!enableSections.sentiment}
+                        size='sm'
+                        className='px-1.5! py-0.5! border! cursor-pointer'
+                        onClick={() => setSentiment(prev => ({
+                          ...prev,
+                          [element.value]: !prev[element.value]
+                        }))}
+                      >
+                        <Icon />
+                        {element.label}
+                      </Button>
+                    );
+                  })}
+              </ButtonGroup>
+            </DisalableInput>
+
+          </SidebarItemCollapsible>
+
           <SidebarItemCollapsible
             label='Engagement'
             open={openSections.engagement}
@@ -199,78 +328,8 @@ export default function QuerySidebar() {
 
           </SidebarItemCollapsible>
 
-          <SidebarItemCollapsible
-            label='Classification'
-            open={openSections.classification}
-            onClick={() => setOpenSections(prev => ({
-              ...prev, classification: !prev.classification
-            }))}
-            className='flex flex-col gap-4'
-          >
-
-            <DisalableInput
-              label='Topic'
-              className='flex flex-wrap gap-2 justify-center'
-              checked={enableSections.classification}
-              onClick={() => setEnableSection(prev => ({
-                ...prev, classification: !enableSections.classification
-              }))}
-            >
-              {classificationLabels.map((label, idx) => {
-                const Icon = label.icon;
-                return (
-                  <Button key={idx}
-                    variant={topics.get(label.key) ? 'default' : 'outline'}
-                    size='sm'
-                    className='px-1.5! py-0.5! border! cursor-pointer'
-                    onClick={() => setTopics(prev => {
-                      const copy = new Map(prev);
-                      copy.set(label.key, !prev.get(label.key));
-                      return copy;
-                    })}
-                  >
-                    <Icon />
-                    {label.name}
-                  </Button>
-                );
-              })}
-            </DisalableInput>
-
-            <DisalableInput
-              label='Sentiment'
-              checked={enableSections.sentiment}
-              className='flex justify-center'
-              onClick={() => setEnableSection(prev => ({
-                ...prev, sentiment: !enableSections.sentiment
-              }))}
-            >
-              <ButtonGroup className='pl-6'>
-                {sentimentOptions.map((element, idx) => {
-                    const Icon = element.icon;
-                    return (
-                      <Button
-                        key={idx}
-                        variant={sentiment[element.value] ? 'default' : 'outline'}
-                        disabled={!enableSections.sentiment}
-                        size='sm'
-                        className='px-1.5! py-0.5! border! cursor-pointer'
-                        onClick={() => setSentiment(prev => ({
-                          ...prev,
-                          [element.value]: !prev[element.value]
-                        }))}
-                      >
-                        <Icon />
-                        {element.label}
-                      </Button>
-                    );
-                  })}
-              </ButtonGroup>
-
-            </DisalableInput>
-
-          </SidebarItemCollapsible>
-
         </SidebarGroupCollapsible>
+
 
         <SidebarGroupCollapsible groupLabel='Sorts' defaultOpen>
         </SidebarGroupCollapsible>
