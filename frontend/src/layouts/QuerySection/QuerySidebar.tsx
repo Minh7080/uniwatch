@@ -15,7 +15,7 @@ import { emotions } from './emotions';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import SidebarGroupCollapsible from './components/SidebarGroupCollapsible';
 import DatePicker from '../../components/DatePicker';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -32,8 +32,14 @@ import { ButtonGroup } from '@/components/ui/button-group';
 import { type Sentiment, sentimentOptions } from './sentimentOptions';
 import { Input } from '@/components/ui/input';
 import SidebarSeparator from './components/SidebarSeparator';
+import { type sortbySelectOptions } from './sortbySelectOptions.ts';
+import { type queryType } from './queryType.ts';
 
-export default function QuerySidebar() {
+type QuerySidebarProps = {
+  onQueryChange?: (query: queryType) => void;
+};
+
+export default function QuerySidebar({ onQueryChange }: QuerySidebarProps = {}) {
   const [sourcesChecked, setSourcesChecked] = useState<Map<string, boolean>>(
     () => new Map(subreddits.map(sub => [sub.subreddit, true]))
   );
@@ -83,6 +89,131 @@ export default function QuerySidebar() {
   const [ironySelect, setIronySelect] = useState<boolean>(false);
   const [hateSpeechSelect, setHateSpeechSelect] = useState<boolean>(false);
   const [offensiveSelect, setOffensiveSelect] = useState<boolean>(false);
+  const [sortSelect, setSortSelect] = useState<sortbySelectOptions>('best');
+  const [upvotesMin, setUpvotesMin] = useState<number | undefined>(undefined);
+  const [upvotesMax, setUpvotesMax] = useState<number | undefined>(undefined);
+  const [commentsMin, setCommentsMin] = useState<number | undefined>(undefined);
+  const [commentsMax, setCommentsMax] = useState<number | undefined>(undefined);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+
+  const query = useMemo<queryType>(() => {
+    const newQuery: queryType = {
+      sort: sortSelect,
+    };
+
+    // Sources
+    const selectedSources = Array.from(sourcesChecked.entries())
+      .filter(([, checked]) => checked)
+      .map(([subreddit]) => subreddit);
+    if (selectedSources.length === subreddits.length) {
+      newQuery.sources = undefined;
+    } else if (selectedSources.length > 0) {
+      newQuery.sources = selectedSources;
+    }
+
+    // Date ranges
+    if (dateRanges.from && dateRanges.to) {
+      newQuery.dateRanges = {
+        from: dateRanges.from.toISOString(),
+        to: dateRanges.to.toISOString(),
+      };
+    }
+
+    // Topic
+    if (enableSections.topic) {
+      const selectedTopics = Array.from(topics.entries())
+        .filter(([, checked]) => checked)
+        .map(([key]) => key);
+      if (selectedTopics.length > 0) {
+        newQuery.topic = selectedTopics;
+      }
+    }
+
+    // Search term
+    if (enableSections.searchTerm && searchTerm.trim()) {
+      newQuery.searchTerm = searchTerm.trim();
+    }
+
+    // Emotion
+    if (enableSections.emotions) {
+      const selectedEmotions = Array.from(emotionsSelected.entries())
+        .filter(([, checked]) => checked)
+        .map(([key]) => key);
+      if (selectedEmotions.length > 0) {
+        newQuery.emotion = selectedEmotions;
+      }
+    }
+
+    // Sentiment
+    if (enableSections.sentiment) {
+      const selectedSentiments = Object.entries(sentiment)
+        .filter(([, checked]) => checked)
+        .map(([key]) => key);
+      if (selectedSentiments.length > 0) {
+        newQuery.sentiment = selectedSentiments;
+      }
+    }
+
+    // Irony
+    if (enableSections.irony) {
+      newQuery.irony = ironySelect;
+    }
+
+    // Upvotes
+    if (enableSections.upvotes && (upvotesMin !== undefined || upvotesMax !== undefined)) {
+      newQuery.upvotes = {
+        min: upvotesMin ?? 0,
+        max: upvotesMax ?? Number.MAX_SAFE_INTEGER,
+      };
+    }
+
+    // Comments
+    if (enableSections.comments && (commentsMin !== undefined || commentsMax !== undefined)) {
+      newQuery.comments = {
+        min: commentsMin ?? 0,
+        max: commentsMax ?? Number.MAX_SAFE_INTEGER,
+      };
+    }
+
+    // Upvote ratio
+    if (enableSections.upvoteRatio) {
+      newQuery.upvoteRatio = upvoteRatio;
+    }
+
+    // Hate speech
+    if (enableSections.hateSpeech) {
+      newQuery.hateSpeech = hateSpeechSelect;
+    }
+
+    // Offensive
+    if (enableSections.offensive) {
+      newQuery.offensive = offensiveSelect;
+    }
+
+    return newQuery;
+  }, [
+    sourcesChecked,
+    dateRanges,
+    topics,
+    enableSections,
+    searchTerm,
+    emotionsSelected,
+    sentiment,
+    ironySelect,
+    upvotesMin,
+    upvotesMax,
+    commentsMin,
+    commentsMax,
+    upvoteRatio,
+    hateSpeechSelect,
+    offensiveSelect,
+    sortSelect,
+  ]);
+
+  // Notify parent when query changes
+  useEffect(() => {
+    onQueryChange?.(query);
+  }, [query, onQueryChange]);
 
   return (
     <Sidebar contained>
@@ -228,7 +359,11 @@ export default function QuerySidebar() {
                 ...prev, searchTerm: !enableSections.searchTerm
               }))}
             >
-              <Input placeholder='Search Term' />
+              <Input 
+                placeholder='Search Term' 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </DisalableInput>
 
           </SidebarItemCollapsible>
@@ -336,6 +471,10 @@ export default function QuerySidebar() {
               onClick={() => setEnableSection(prev => ({
                 ...prev, upvotes: !enableSections.upvotes
               }))}
+              minValue={upvotesMin}
+              maxValue={upvotesMax}
+              onMinChange={setUpvotesMin}
+              onMaxChange={setUpvotesMax}
             />
 
             <MinMaxInput
@@ -344,6 +483,10 @@ export default function QuerySidebar() {
               onClick={() => setEnableSection(prev => ({
                 ...prev, comments: !enableSections.comments
               }))}
+              minValue={commentsMin}
+              maxValue={commentsMax}
+              onMinChange={setCommentsMin}
+              onMaxChange={setCommentsMax}
             />
 
             <SliderInput
@@ -411,7 +554,23 @@ export default function QuerySidebar() {
 
         <SidebarSeparator />
 
-        <SidebarGroupCollapsible groupLabel='Sorts' defaultOpen>
+        <SidebarGroupCollapsible groupLabel='Sort by' defaultOpen>
+          <SidebarMenuItem className='ml-2'>
+            <PresetSelect
+              label='Sort by'
+              value={sortSelect}
+              onValueChange={value => {
+                setSortSelect(value as sortbySelectOptions);
+              }}
+            >
+              <SelectItem value='best'>Best</SelectItem>
+              <SelectItem value='hot'>Hot</SelectItem>
+              <SelectItem value='new'>New</SelectItem>
+              <SelectItem value='top'>Top</SelectItem>
+              <SelectItem value='rising'>Rising</SelectItem>
+              <SelectItem value='controversial'>Controversial</SelectItem>
+            </PresetSelect>
+          </SidebarMenuItem>
         </SidebarGroupCollapsible>
       </SidebarContent>
 

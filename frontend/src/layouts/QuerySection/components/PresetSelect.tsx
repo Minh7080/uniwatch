@@ -20,7 +20,11 @@ export type DateRangesPresetSelectProps = {
 export default function PresetSelect({ value, onValueChange, label, children, disabled }:
   DateRangesPresetSelectProps) {
   return (
-    <Select value={value} onValueChange={onValueChange} disabled={disabled}>
+    <Select 
+      value={value} 
+      onValueChange={onValueChange} 
+      disabled={disabled}
+    >
       <SelectTrigger className='w-full'>
         <SelectValue placeholder='Select a fruit' />
       </SelectTrigger>
