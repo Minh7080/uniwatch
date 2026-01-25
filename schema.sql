@@ -24,16 +24,15 @@ CREATE TABLE raw_post (
 );
 
 CREATE TABLE classified_post_data (
-    post_id TEXT PRIMARY KEY,
+    post_id TEXT PRIMARY KEY REFERENCES raw_post(id) ON DELETE CASCADE,
     topic TEXT,
     sentiment TEXT,
     irony BOOLEAN,
     hate_speech BOOLEAN,
     offensive BOOLEAN,
     emotion TEXT,
-    classified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY(post_id) REFERENCES raw_post(id) ON DELETE CASCADE
+    classified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_raw_post_subreddit_created_utc_id
-ON raw_post (subreddit, created_utc desc, id desc);
+ON raw_post (subreddit, created_utc DESC, id DESC);
