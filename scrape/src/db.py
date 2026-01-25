@@ -1,6 +1,7 @@
-import sqlite3
+import psycopg2
 from typing import TypedDict
 from pathlib import Path
+import os
 
 class PostEntry(TypedDict, total = False):
     id: str
@@ -35,29 +36,57 @@ class PostDataEntry(TypedDict, total = False):
     emotion: str
 
 BASE_DIR = Path(__file__).resolve().parent
-DB_PATH = BASE_DIR.parents[1] / 'reddit.db'
 
-connection = sqlite3.connect(DB_PATH)
+connection = psycopg2.connect(
+    host=os.getenv('DB_HOST', 'localhost'),
+    database=os.getenv('DB_NAME', 'reddit'),
+    user=os.getenv('DB_USER', 'postgres'),
+    password=os.getenv('DB_PASS', ''),
+    port=os.getenv('DB_PORT', '5432'),
+    sslmode='verify-full',
+    sslrootcert=os.getenv('DB_SSLROOTCERT')
+)
 cursor = connection.cursor()
 
 def is_post_inserted(post_id: str) -> bool:
-    cursor.execute('SELECT 1 FROM raw_post WHERE ID = ?', (post_id,))
+    cursor.execute('SELECT 1 FROM raw_post WHERE id = %s', (post_id,))
     return cursor.fetchone() is not None
 
 def insert_post(post_entry: PostEntry) -> None:
     try:
         cursor.execute('''
-            INSERT OR REPLACE INTO raw_post (
+            INSERT INTO raw_post (
                 id, subreddit, author, title, selftext, url, permalink,
                 score, upvote_ratio, num_comments, created_utc, is_self,
                 over_18, spoiler, stickied, locked, flair_text, thumbnail,
                 media_url, distinguished, edited
             ) VALUES (
-                :id, :subreddit, :author, :title, :selftext, :url, :permalink,
-                :score, :upvote_ratio, :num_comments, :created_utc, :is_self,
-                :over_18, :spoiler, :stickied, :locked, :flair_text, :thumbnail,
-                :media_url, :distinguished, :edited
+                %(id)s, %(subreddit)s, %(author)s, %(title)s, %(selftext)s, %(url)s, %(permalink)s,
+                %(score)s, %(upvote_ratio)s, %(num_comments)s, %(created_utc)s, %(is_self)s,
+                %(over_18)s, %(spoiler)s, %(stickied)s, %(locked)s, %(flair_text)s, %(thumbnail)s,
+                %(media_url)s, %(distinguished)s, %(edited)s
             )
+            ON CONFLICT (id) DO UPDATE SET
+                subreddit = EXCLUDED.subreddit,
+                author = EXCLUDED.author,
+                title = EXCLUDED.title,
+                selftext = EXCLUDED.selftext,
+                url = EXCLUDED.url,
+                permalink = EXCLUDED.permalink,
+                score = EXCLUDED.score,
+                upvote_ratio = EXCLUDED.upvote_ratio,
+                num_comments = EXCLUDED.num_comments,
+                created_utc = EXCLUDED.created_utc,
+                is_self = EXCLUDED.is_self,
+                over_18 = EXCLUDED.over_18,
+                spoiler = EXCLUDED.spoiler,
+                stickied = EXCLUDED.stickied,
+                locked = EXCLUDED.locked,
+                flair_text = EXCLUDED.flair_text,
+                thumbnail = EXCLUDED.thumbnail,
+                media_url = EXCLUDED.media_url,
+                distinguished = EXCLUDED.distinguished,
+                edited = EXCLUDED.edited
         ''', {**post_entry})
 
         connection.commit()
@@ -83,14 +112,21 @@ def get_unclassified_post() -> list[tuple]:
 def insert_post_data(post_data_entry: PostDataEntry) -> None:
     try:
         cursor.execute('''
-            INSERT OR REPLACE INTO classified_post_data (
+            INSERT INTO classified_post_data (
                 post_id, topic, sentiment, irony, hate_speech, offensive, emotion
             ) VALUES (
-                :post_id, :topic, :sentiment, :irony, :hate_speech, :offensive, :emotion
+                %(post_id)s, %(topic)s, %(sentiment)s, %(irony)s, %(hate_speech)s, %(offensive)s, %(emotion)s
             )
+            ON CONFLICT (post_id) DO UPDATE SET
+                topic = EXCLUDED.topic,
+                sentiment = EXCLUDED.sentiment,
+                irony = EXCLUDED.irony,
+                hate_speech = EXCLUDED.hate_speech,
+                offensive = EXCLUDED.offensive,
+                emotion = EXCLUDED.emotion
         ''', {**post_data_entry})
         connection.commit()
 
     except Exception as e:
-        print(f"Error inserting post data {post_data_entry.get('id', 'unknown')}: {e}")
+        print(f"Error inserting post data {post_data_entry.get('post_id', 'unknown')}: {e}")
         connection.rollback()
