@@ -1,7 +1,10 @@
 import psycopg2
 from typing import TypedDict
-from pathlib import Path
 import os
+from datetime import datetime
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
 
 class PostEntry(TypedDict, total = False):
     id: str
@@ -35,8 +38,6 @@ class PostDataEntry(TypedDict, total = False):
     offensive: bool
     emotion: str
 
-BASE_DIR = Path(__file__).resolve().parent
-
 connection = psycopg2.connect(
     host=os.getenv('DB_HOST', 'localhost'),
     database=os.getenv('DB_NAME', 'reddit'),
@@ -54,6 +55,11 @@ def is_post_inserted(post_id: str) -> bool:
 
 def insert_post(post_entry: PostEntry) -> None:
     try:
+        # Convert created_utc from Unix timestamp to datetime if present
+        post_data = {**post_entry}
+        if 'created_utc' in post_data and post_data['created_utc'] is not None:
+            post_data['created_utc'] = datetime.fromtimestamp(post_data['created_utc'])
+        
         cursor.execute('''
             INSERT INTO raw_post (
                 id, subreddit, author, title, selftext, url, permalink,
@@ -87,7 +93,7 @@ def insert_post(post_entry: PostEntry) -> None:
                 media_url = EXCLUDED.media_url,
                 distinguished = EXCLUDED.distinguished,
                 edited = EXCLUDED.edited
-        ''', {**post_entry})
+        ''', post_data)
 
         connection.commit()
     except Exception as e:
