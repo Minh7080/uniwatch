@@ -32,7 +32,6 @@ CREATE TABLE posts (
     edited BOOLEAN,
     retrieved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     hot_score DOUBLE PRECISION,
-    rising_score DOUBLE PRECISION,
     controversial_score DOUBLE PRECISION
 );
 
@@ -40,6 +39,27 @@ CREATE TABLE topics (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL UNIQUE
 );
+
+INSERT INTO topics (name) VALUES
+    ('arts_&_culture'),
+    ('business_&_entrepreneurs'),
+    ('celebrity_&_pop_culture'),
+    ('diaries_&_daily_life'),
+    ('family'),
+    ('fashion_&_style'),
+    ('film_tv_&_video'),
+    ('fitness_&_health'),
+    ('food_&_dining'),
+    ('gaming'),
+    ('learning_&_educational'),
+    ('music'),
+    ('news_&_social_concern'),
+    ('other_hobbies'),
+    ('relationships'),
+    ('science_&_technology'),
+    ('sports'),
+    ('travel_&_adventure'),
+    ('youth_&_student_life');
 
 CREATE TABLE post_data (
     post_id TEXT PRIMARY KEY REFERENCES posts(id) ON DELETE CASCADE,
@@ -62,7 +82,6 @@ CREATE TABLE post_data_topics (
 CREATE INDEX idx_posts_subreddit_new ON posts(subreddit_id, created_utc DESC);
 CREATE INDEX idx_posts_subreddit_hot ON posts(subreddit_id, hot_score DESC);
 CREATE INDEX idx_posts_subreddit_top ON posts(subreddit_id, score DESC);
-CREATE INDEX idx_posts_subreddit_rising ON posts(subreddit_id, rising_score DESC);
 CREATE INDEX idx_posts_subreddit_controversial ON posts(subreddit_id, controversial_score DESC);
 
 CREATE VIEW response AS
@@ -93,7 +112,6 @@ SELECT
     posts.edited,
     posts.retrieved_at,
     posts.hot_score,
-    posts.rising_score,
     posts.controversial_score,
     subreddits.name AS subreddit_name,
     subreddits.subreddit_url,
