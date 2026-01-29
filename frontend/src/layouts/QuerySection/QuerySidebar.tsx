@@ -89,7 +89,7 @@ export default function QuerySidebar({ onQueryChange }: QuerySidebarProps = {}) 
   const [ironySelect, setIronySelect] = useState<boolean>(false);
   const [hateSpeechSelect, setHateSpeechSelect] = useState<boolean>(false);
   const [offensiveSelect, setOffensiveSelect] = useState<boolean>(false);
-  const [sortSelect, setSortSelect] = useState<sortbySelectOptions>('best');
+  const [sortSelect, setSortSelect] = useState<sortbySelectOptions>('hot');
   const [upvotes, setUpvotes] = useState<{ min?: number, max?: number }>({
     min: undefined,
     max: undefined,

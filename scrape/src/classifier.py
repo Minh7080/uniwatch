@@ -55,7 +55,9 @@ async def classify_single_post(post: tuple, models: tuple) -> PostDataEntry:
     text = post[3] + '\n' + post[4]
     
     results = await asyncio.gather(
-        asyncio.to_thread(topic_model, text, truncation=True, max_length=512),
+        asyncio.to_thread(
+            topic_model, text, truncation=True, max_length=512, top_k=None
+        ),
         asyncio.to_thread(sentiment_model, text, truncation=True, max_length=512),
         asyncio.to_thread(irony_model, text, truncation=True, max_length=512),
         asyncio.to_thread(hate_model, text, truncation=True, max_length=512),
@@ -63,22 +65,32 @@ async def classify_single_post(post: tuple, models: tuple) -> PostDataEntry:
         asyncio.to_thread(emotion_model, text, truncation=True, max_length=512),
     )
     
-    topic_result = results[0][0]
+    raw_topic = results[0]
+    if raw_topic and isinstance(raw_topic[0], list):
+        topic_scores: list[dict[str, str | float]] = [
+            item for sublist in raw_topic for item in sublist
+        ]
+    else:
+        topic_scores = raw_topic
+    topic_sorted = sorted(topic_scores, key=lambda x: float(x['score']), reverse=True)[:3]
+    topics: list[str] = [str(item['label']) for item in topic_sorted if float(item.get('score', 0)) > 0]
+
     sentiment_result = results[1][0]
     irony_result = results[2][0]
     hate_result = results[3][0]
     offensive_result = results[4][0]
     emotion_result = results[5][0]
-    
-    return {
-        'post_id': post[0],
-        'topic': topic_result['label'],
-        'sentiment': sentiment_result['label'],
+
+    result: PostDataEntry = {
+        'post_id': str(post[0]),
+        'topics': topics,
+        'sentiment': str(sentiment_result['label']),
         'irony': irony_result['label'] == 'irony',
         'hate_speech': hate_result['label'] == 'hate',
         'offensive': offensive_result['label'] == 'offensive',
-        'emotion': emotion_result['label']
+        'emotion': str(emotion_result['label']),
     }
+    return result
 
 async def classify_posts() -> None:
     unclassified_post = get_unclassified_post()

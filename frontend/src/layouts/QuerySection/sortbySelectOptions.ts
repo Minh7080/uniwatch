@@ -1,1 +1,1 @@
-export type sortbySelectOptions = 'best' | 'hot' | 'new' | 'top' | 'rising' | 'controversial';
+export type sortbySelectOptions = 'hot' | 'new' | 'top' | 'rising' | 'controversial';
