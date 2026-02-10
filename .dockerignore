@@ -1,0 +1,28 @@
+# Git and IDE
+.git
+.gitignore
+.cursor
+.vscode
+*.md
+
+# Other apps
+backend
+frontend
+
+# Python
+**/__pycache__
+**/*.pyc
+**/.venv
+**/venv
+**/.pytest_cache
+**/*.egg-info
+
+**/node_modules
+
+# Env (inject at runtime in ECS)
+.env
+.env.*
+
+# Misc
+**/.DS_Store
+schema.sql
