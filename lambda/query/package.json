@@ -1,0 +1,27 @@
+{
+  "name": "query",
+  "version": "1.0.0",
+  "description": "query",
+  "main": "dist/app.js",
+  "repository": "https://github.com/awslabs/aws-sam-cli/tree/develop/samcli/local/init/templates/cookiecutter-aws-sam-hello-nodejs",
+  "author": "SAM CLI",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "esbuild": "^0.27.3"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "mocha -r ts-node/register tests/unit/**/*.ts"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.145",
+    "@types/chai": "^5.2.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.13.4",
+    "chai": "^4.2.0",
+    "mocha": "^11.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../../../../../../tmp/tmp4p2bjles/app.ts"],
+  "sourcesContent": ["export const lambdaHandler = async (\n  _event: any,\n  _context: any,\n): Promise<{ statusCode: number; body: string }> => {\n  try {\n    return {\n      statusCode: 200,\n      body: JSON.stringify({\n        he: JSON.parse(_event.body).greeting,\n      }),\n    };\n  } catch (err) {\n    console.log(err);\n    throw err;\n  }\n};\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAO,IAAM,gBAAgB,OAC3B,QACA,aACkD;AAClD,MAAI;AACF,WAAO;AAAA,MACL,YAAY;AAAA,MACZ,MAAM,KAAK,UAAU;AAAA,QACnB,IAAI,KAAK,MAAM,OAAO,IAAI,EAAE;AAAA,MAC9B,CAAC;AAAA,IACH;AAAA,EACF,SAAS,KAAK;AACZ,YAAQ,IAAI,GAAG;AACf,UAAM;AAAA,EACR;AACF;",
+  "names": []
+}
