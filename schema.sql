@@ -1,11 +1,11 @@
-CREATE TABLE subreddits (
+CREATE TABLE IF NOT EXISTS subreddits (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
     subreddit_url TEXT NOT NULL,
     image_url TEXT NOT NULL
 );
 
-CREATE TABLE posts (
+CREATE TABLE IF NOT EXISTS posts (
     id TEXT PRIMARY KEY,
     subreddit_id TEXT NOT NULL REFERENCES subreddits(id),
     author TEXT,
@@ -35,7 +35,7 @@ CREATE TABLE posts (
     controversial_score DOUBLE PRECISION
 );
 
-CREATE TABLE topics (
+CREATE TABLE IF NOT EXISTS topics (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL UNIQUE
 );
@@ -59,9 +59,10 @@ INSERT INTO topics (name) VALUES
     ('science_&_technology'),
     ('sports'),
     ('travel_&_adventure'),
-    ('youth_&_student_life');
+    ('youth_&_student_life')
+ON CONFLICT DO NOTHING;
 
-CREATE TABLE post_data (
+CREATE TABLE IF NOT EXISTS post_data (
     post_id TEXT PRIMARY KEY REFERENCES posts(id) ON DELETE CASCADE,
     sentiment TEXT,
     irony BOOLEAN,
@@ -71,7 +72,7 @@ CREATE TABLE post_data (
     classified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE post_data_topics (
+CREATE TABLE IF NOT EXISTS post_data_topics (
     post_id TEXT NOT NULL,
     topic_id INT NOT NULL,
     PRIMARY KEY (post_id, topic_id),
@@ -79,13 +80,13 @@ CREATE TABLE post_data_topics (
     FOREIGN KEY (topic_id) REFERENCES topics(id) ON DELETE CASCADE
 );
 
-CREATE INDEX idx_posts_subreddit_new ON posts(subreddit_id, created_utc DESC);
-CREATE INDEX idx_posts_subreddit_hot ON posts(subreddit_id, hot_score DESC);
-CREATE INDEX idx_posts_subreddit_top ON posts(subreddit_id, score DESC);
-CREATE INDEX idx_posts_subreddit_controversial ON posts(subreddit_id, controversial_score DESC);
+CREATE INDEX IF NOT EXISTS idx_posts_subreddit_new ON posts(subreddit_id, created_utc DESC);
+CREATE INDEX IF NOT EXISTS idx_posts_subreddit_hot ON posts(subreddit_id, hot_score DESC);
+CREATE INDEX IF NOT EXISTS idx_posts_subreddit_top ON posts(subreddit_id, score DESC);
+CREATE INDEX IF NOT EXISTS idx_posts_subreddit_controversial ON posts(subreddit_id, controversial_score DESC);
 
-CREATE VIEW response AS
-SELECT 
+CREATE OR REPLACE VIEW response AS
+SELECT
     posts.id AS post_id,
     posts.subreddit_id,
     posts.author,
