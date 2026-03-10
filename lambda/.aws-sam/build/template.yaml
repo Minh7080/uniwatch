@@ -31,7 +31,7 @@ Resources:
           Type: Api
           Properties:
             Path: /query
-            Method: get
+            Method: post
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
@@ -45,18 +45,18 @@ Resources:
       SamResourceId: QueryFunction
 Outputs:
   QueryApi:
-    Description: API Gateway endpoint URL for Prod stage for Hello World function
+    Description: API Gateway endpoint URL for Prod stage for Query function
     Value:
-      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/query/
   QueryFunction:
-    Description: Hello World Lambda Function ARN
+    Description: Query Lambda Function ARN
     Value:
       Fn::GetAtt:
-      - HelloWorldFunction
+      - QueryFunction
       - Arn
   QueryFunctionIamRole:
-    Description: Implicit IAM Role created for Hello World function
+    Description: Implicit IAM Role created for Query function
     Value:
       Fn::GetAtt:
-      - HelloWorldFunctionRole
+      - QueryFunctionRole
       - Arn

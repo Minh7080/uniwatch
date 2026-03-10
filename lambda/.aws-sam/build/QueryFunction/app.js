@@ -33933,7 +33933,7 @@ var lambdaHandler = async (event) => {
         statement = statement.orderBy("posts.controversial_score", "desc");
         break;
     }
-    const rows = await statement.orderBy("posts.created_utc", "desc").limit(200).execute();
+    const rows = await statement.limit(200).execute();
     return {
       statusCode: 200,
       body: JSON.stringify(rows)
