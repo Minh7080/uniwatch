@@ -7,7 +7,7 @@ Description: 'lambda
   '
 Globals:
   Function:
-    Timeout: 3
+    Timeout: 30
 Resources:
   QueryFunction:
     Type: AWS::Serverless::Function
@@ -15,6 +15,15 @@ Resources:
       CodeUri: QueryFunction
       Handler: app.lambdaHandler
       Runtime: nodejs24.x
+      Environment:
+        Variables:
+          DB_HOST: ''
+          DB_PORT: ''
+          DB_NAME: ''
+          DB_USER: ''
+          DB_SSLROOTCERT: ''
+          DB_PASS: ''
+          NODE_OPTIONS: ' --enable-source-maps'
       Architectures:
       - x86_64
       Events:
@@ -23,14 +32,13 @@ Resources:
           Properties:
             Path: /query
             Method: get
-      Environment:
-        Variables:
-          NODE_OPTIONS: ' --enable-source-maps'
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
         EntryPoints:
-        - app.ts
+        - src/app.ts
+        Loader:
+        - .pem=text
         Minify: false
         Sourcemap: true
         Target: es2022
