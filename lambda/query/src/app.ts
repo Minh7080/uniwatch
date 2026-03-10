@@ -139,24 +139,67 @@ export const lambdaHandler = async (
 
     switch (query.sort) {
       case 'new':
-        statement = statement.orderBy('posts.created_utc', 'desc');
+        statement = statement.orderBy('posts.created_utc', 'desc').orderBy('posts.id', 'desc');
         break;
       case 'top':
-        statement = statement.orderBy('posts.score', 'desc');
+        statement = statement.orderBy('posts.score', 'desc').orderBy('posts.id', 'desc');
         break;
       case 'hot':
-        statement = statement.orderBy('posts.hot_score', 'desc');
+        statement = statement.orderBy('posts.hot_score', 'desc').orderBy('posts.id', 'desc');
         break;
       case 'controversial':
-        statement = statement.orderBy('posts.controversial_score', 'desc');
+        statement = statement.orderBy('posts.controversial_score', 'desc').orderBy('posts.id', 'desc');
         break;
     }
 
-    const rows = await statement.limit(200).execute();
+    if (query.cursor) {
+      const cursor: { sortValue: unknown; postId: string } = JSON.parse(
+        Buffer.from(query.cursor, 'base64url').toString('utf8'),
+      );
+      switch (query.sort) {
+        case 'new':
+          statement = statement.where(
+            sql<boolean>`(posts.created_utc, posts.id) < (${new Date(cursor.sortValue as string)}, ${cursor.postId})`,
+          );
+          break;
+        case 'top':
+          statement = statement.where(
+            sql<boolean>`(posts.score, posts.id) < (${cursor.sortValue}, ${cursor.postId})`,
+          );
+          break;
+        case 'hot':
+          statement = statement.where(
+            sql<boolean>`(posts.hot_score, posts.id) < (${cursor.sortValue}, ${cursor.postId})`,
+          );
+          break;
+        case 'controversial':
+          statement = statement.where(
+            sql<boolean>`(posts.controversial_score, posts.id) < (${cursor.sortValue}, ${cursor.postId})`,
+          );
+          break;
+      }
+    }
+
+    const limit = query.limit;
+    const rows = await statement.limit(limit + 1).execute();
+
+    let nextCursor: string | null = null;
+    if (rows.length > limit) {
+      rows.splice(limit);
+      const last = rows[limit - 1];
+      const sortValue =
+        query.sort === 'new' ? last.created_utc
+        : query.sort === 'top' ? last.score
+        : query.sort === 'hot' ? last.hot_score
+        : last.controversial_score;
+      nextCursor = Buffer.from(
+        JSON.stringify({ sortValue, postId: last.post_id }),
+      ).toString('base64url');
+    }
 
     return {
       statusCode: 200,
-      body: JSON.stringify(rows),
+      body: JSON.stringify({ data: rows, nextCursor }),
     };
   } catch (err) {
     console.log(err);
