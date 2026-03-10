@@ -45,6 +45,9 @@ export const QuerySchema = z.object({
     'hot',
     'controversial',
   ]),
+
+  cursor: z.string().optional(),
+  limit: z.number().int().min(1).max(200).default(50),
 });
 
 export type QueryType = z.infer<typeof QuerySchema>;
