@@ -15,16 +15,16 @@ Resources:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       CodeUri: query/
-      Handler: app.lambdaHandler
+      Handler: src/app.lambdaHandler
       Runtime: nodejs24.x
       Environment:
         Variables:
-          DB_HOST: ""
-          DB_PORT: ""
-          DB_NAME: ""
-          DB_USER: ""
-          DB_SSLROOTCERT: ""
-          DB_PASS: ""
+          DB_HOST: "{{resolve:ssm:/uniwatch/DB_HOST}}"
+          DB_PORT: "{{resolve:ssm:/uniwatch/DB_PORT}}"
+          DB_NAME: "{{resolve:ssm:/uniwatch/DB_NAME}}"
+          DB_USER: "{{resolve:ssm:/uniwatch/DB_USER}}"
+          DB_PASS: "{{resolve:ssm:/uniwatch/DB_PASS}}"
+          DB_SSLROOTCERT: "{{resolve:ssm:/uniwatch/DB_SSLROOTCERT}}"
       Architectures:
         - x86_64
       Events:
