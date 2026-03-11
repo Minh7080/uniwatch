@@ -1,7 +1,7 @@
 # Security group for the Lambda function (needs access to Aurora)
 resource "aws_security_group" "lambda" {
   name        = "uniwatch-lambda-sg"
-  description = "Lambda function — outbound to RDS only"
+  description = "Lambda function - outbound to RDS only"
   vpc_id      = aws_vpc.main.id
 
   egress {
@@ -17,7 +17,7 @@ resource "aws_security_group" "lambda" {
 # Security group for ECS Fargate scraper tasks
 resource "aws_security_group" "ecs" {
   name        = "uniwatch-ecs-sg"
-  description = "ECS scraper tasks — outbound to internet (Reddit API) and RDS"
+  description = "ECS scraper tasks - outbound to internet (Reddit API) and RDS"
   vpc_id      = aws_vpc.main.id
 
   egress {
@@ -33,7 +33,7 @@ resource "aws_security_group" "ecs" {
 # Security group for Aurora cluster
 resource "aws_security_group" "rds" {
   name        = "uniwatch-rds-sg"
-  description = "Aurora PostgreSQL — allow 5432 from Lambda and ECS"
+  description = "Aurora PostgreSQL - allow 5432 from Lambda and ECS"
   vpc_id      = aws_vpc.main.id
 
   ingress {
