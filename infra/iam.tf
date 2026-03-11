@@ -20,16 +20,23 @@ resource "aws_iam_role_policy_attachment" "ecs_execution_managed" {
 }
 
 resource "aws_iam_role_policy" "ecs_execution_ssm" {
-  name = "ssm-read-uniwatch"
+  name = "ssm-secretsmanager-read-uniwatch"
   role = aws_iam_role.ecs_task_execution.id
 
   policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [{
-      Effect   = "Allow"
-      Action   = ["ssm:GetParameter", "ssm:GetParameters"]
-      Resource = "arn:aws:ssm:ap-southeast-2:*:parameter/uniwatch/*"
-    }]
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["ssm:GetParameter", "ssm:GetParameters"]
+        Resource = "arn:aws:ssm:ap-southeast-2:*:parameter/uniwatch/*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["secretsmanager:GetSecretValue"]
+        Resource = aws_secretsmanager_secret.db.arn
+      }
+    ]
   })
 }
 
