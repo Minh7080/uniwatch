@@ -4,11 +4,22 @@ Description: >
   lambda
 
   Sample SAM Template for lambda
-  
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+
+Parameters:
+  SubnetIds:
+    Type: CommaDelimitedList
+    Description: Private subnet IDs for Lambda VPC config
+  SecurityGroupId:
+    Type: String
+    Description: Security group ID for Lambda VPC config
+
 Globals:
   Function:
     Timeout: 30
+    VpcConfig:
+      SubnetIds: !Ref SubnetIds
+      SecurityGroupIds:
+        - !Ref SecurityGroupId
 
 Resources:
   QueryFunction:
@@ -23,7 +34,7 @@ Resources:
           DB_PORT: "{{resolve:ssm:/uniwatch/DB_PORT}}"
           DB_NAME: "{{resolve:ssm:/uniwatch/DB_NAME}}"
           DB_USER: "{{resolve:ssm:/uniwatch/DB_USER}}"
-          DB_PASS: "{{resolve:ssm:/uniwatch/DB_PASS}}"
+          DB_PASS: "{{resolve:secretsmanager:uniwatch/db-credentials:SecretString:password}}"
           DB_SSLROOTCERT: "{{resolve:ssm:/uniwatch/DB_SSLROOTCERT}}"
       Architectures:
         - x86_64

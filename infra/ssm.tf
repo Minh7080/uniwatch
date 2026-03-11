@@ -24,12 +24,6 @@ resource "aws_ssm_parameter" "db_user" {
   value = var.db_username
 }
 
-resource "aws_ssm_parameter" "db_pass" {
-  name  = "/uniwatch/DB_PASS"
-  type  = "SecureString"
-  value = random_password.db.result
-}
-
 resource "aws_ssm_parameter" "db_sslrootcert" {
   name  = "/uniwatch/DB_SSLROOTCERT"
   type  = "String"

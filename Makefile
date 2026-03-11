@@ -18,10 +18,15 @@ deploy-scraper:
 
 ## Build + deploy the Lambda function via SAM
 deploy-lambda:
+	$(eval SUBNET_IDS := $(shell tofu -chdir=infra output -json private_subnet_ids | python3 -c "import json,sys; print(','.join(json.load(sys.stdin)))"))
+	$(eval LAMBDA_SG  := $(shell tofu -chdir=infra output -raw lambda_security_group_id))
 	@echo "==> Building Lambda..."
 	cd lambda && sam build
 	@echo "==> Deploying Lambda..."
-	cd lambda && sam deploy
+	cd lambda && sam deploy \
+		--parameter-overrides \
+		  SubnetIds="$(SUBNET_IDS)" \
+		  SecurityGroupId="$(LAMBDA_SG)"
 
 ## Apply schema.sql to Aurora via the RDS Data API (idempotent, safe to re-run)
 init-db:
