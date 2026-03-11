@@ -27,8 +27,8 @@ resource "aws_ecs_task_definition" "scraper" {
   family                   = "uniwatch-scraper"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  cpu                      = 512
-  memory                   = 1024
+  cpu                      = 1024
+  memory                   = 4096
   execution_role_arn       = aws_iam_role.ecs_task_execution.arn
   task_role_arn            = aws_iam_role.ecs_task.arn
 
@@ -42,7 +42,7 @@ resource "aws_ecs_task_definition" "scraper" {
       { name = "DB_PORT", valueFrom = aws_ssm_parameter.db_port.arn },
       { name = "DB_NAME", valueFrom = aws_ssm_parameter.db_name.arn },
       { name = "DB_USER", valueFrom = aws_ssm_parameter.db_user.arn },
-      { name = "DB_PASS", valueFrom = aws_ssm_parameter.db_pass.arn },
+      { name = "DB_PASS", valueFrom = "${aws_secretsmanager_secret.db.arn}:password::" },
       { name = "DB_SSLROOTCERT", valueFrom = aws_ssm_parameter.db_sslrootcert.arn },
     ]
 
