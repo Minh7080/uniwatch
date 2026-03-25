@@ -3,7 +3,7 @@
 resource "aws_ssm_parameter" "db_host" {
   name  = "/uniwatch/DB_HOST"
   type  = "String"
-  value = aws_rds_cluster.main.endpoint
+  value = aws_db_instance.main.address
 }
 
 resource "aws_ssm_parameter" "db_port" {
@@ -28,4 +28,10 @@ resource "aws_ssm_parameter" "db_sslrootcert" {
   name  = "/uniwatch/DB_SSLROOTCERT"
   type  = "String"
   value = "/certs/global-bundle.pem"
+}
+
+resource "aws_ssm_parameter" "db_pass" {
+  name  = "/uniwatch/DB_PASS"
+  type  = "String"
+  value = random_password.db.result
 }

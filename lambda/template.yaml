@@ -8,7 +8,7 @@ Description: >
 Parameters:
   SubnetIds:
     Type: CommaDelimitedList
-    Description: Private subnet IDs for Lambda VPC config
+    Description: Public subnet IDs for Lambda VPC config
   SecurityGroupId:
     Type: String
     Description: Security group ID for Lambda VPC config
@@ -34,8 +34,7 @@ Resources:
           DB_PORT: "{{resolve:ssm:/uniwatch/DB_PORT}}"
           DB_NAME: "{{resolve:ssm:/uniwatch/DB_NAME}}"
           DB_USER: "{{resolve:ssm:/uniwatch/DB_USER}}"
-          DB_PASS: "{{resolve:secretsmanager:uniwatch/db-credentials:SecretString:password}}"
-          DB_SSLROOTCERT: "{{resolve:ssm:/uniwatch/DB_SSLROOTCERT}}"
+          DB_PASS: "{{resolve:ssm:/uniwatch/DB_PASS}}"
       Architectures:
         - x86_64
       Events:

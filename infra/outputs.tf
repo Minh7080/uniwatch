@@ -1,16 +1,6 @@
 output "rds_endpoint" {
-  description = "Aurora cluster writer endpoint"
-  value       = aws_rds_cluster.main.endpoint
-}
-
-output "rds_cluster_arn" {
-  description = "Aurora cluster ARN (used by RDS Data API)"
-  value       = aws_rds_cluster.main.arn
-}
-
-output "db_secret_arn" {
-  description = "Secrets Manager secret ARN for DB credentials (used by RDS Data API)"
-  value       = aws_secretsmanager_secret.db.arn
+  description = "RDS instance endpoint"
+  value       = aws_db_instance.main.address
 }
 
 output "db_name" {
@@ -33,9 +23,9 @@ output "vpc_id" {
   value       = aws_vpc.main.id
 }
 
-output "private_subnet_ids" {
-  description = "Private subnet IDs — use for Lambda VPC config in SAM template"
-  value       = aws_subnet.private[*].id
+output "public_subnet_ids" {
+  description = "Public subnet IDs — use for Lambda VPC config in SAM template"
+  value       = aws_subnet.public[*].id
 }
 
 output "lambda_security_group_id" {

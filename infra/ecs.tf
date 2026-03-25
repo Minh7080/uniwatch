@@ -1,5 +1,6 @@
 resource "aws_ecr_repository" "scraper" {
   name                 = "uniwatch-scraper"
+  force_delete         = true
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
@@ -42,7 +43,7 @@ resource "aws_ecs_task_definition" "scraper" {
       { name = "DB_PORT", valueFrom = aws_ssm_parameter.db_port.arn },
       { name = "DB_NAME", valueFrom = aws_ssm_parameter.db_name.arn },
       { name = "DB_USER", valueFrom = aws_ssm_parameter.db_user.arn },
-      { name = "DB_PASS", valueFrom = "${aws_secretsmanager_secret.db.arn}:password::" },
+      { name = "DB_PASS", valueFrom = aws_ssm_parameter.db_pass.arn },
       { name = "DB_SSLROOTCERT", valueFrom = aws_ssm_parameter.db_sslrootcert.arn },
     ]
 
@@ -80,9 +81,9 @@ resource "aws_scheduler_schedule" "scraper" {
       launch_type         = "FARGATE"
 
       network_configuration {
-        assign_public_ip = false
+        assign_public_ip = true
         security_groups  = [aws_security_group.ecs.id]
-        subnets          = aws_subnet.private[*].id
+        subnets          = aws_subnet.public[*].id
       }
     }
   }
