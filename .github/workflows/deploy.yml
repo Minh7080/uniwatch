@@ -33,12 +33,12 @@ jobs:
             -e "ssh -i ~/.ssh/deploy_key" \
             --exclude='.git' \
             --exclude='secrets.enc.env' \
-            ./ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/app/
+            ./ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/uniwatch/
 
       - name: Run docker compose on VPS
         run: |
-          ssh -i ~/.ssh/deploy_key \
+          ssh -T -i ~/.ssh/deploy_key \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
-            cd ~/app
+            cd ~/uniwatch
             docker compose up -d --build
           EOF
