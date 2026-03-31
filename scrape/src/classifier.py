@@ -17,7 +17,7 @@ TOPICS = [
 SENTIMENTS = ["Positive", "Neutral", "Negative"]
 EMOTIONS = ["joy", "optimism", "anger", "sadness"]
 
-_SYSTEM_PROMPT = f"""You are a text classifier. Given a JSON array of Reddit posts (each with an "id", "title", and "selftext"), return a JSON array of classification objects in the same order. Each object must have:
+_SYSTEM_PROMPT = f"""You are a text classifier. Given a JSON array of Reddit posts (each with an "id", "title", and "selftext"), return a JSON object with a "results" key containing an array of classification objects in the same order. Each object must have:
 - id: the post id
 - topics: array of 1-3 labels from {json.dumps(TOPICS)}
 - sentiment: one of {json.dumps(SENTIMENTS)}
@@ -25,10 +25,10 @@ _SYSTEM_PROMPT = f"""You are a text classifier. Given a JSON array of Reddit pos
 - hate_speech: boolean
 - offensive: boolean
 - emotion: one of {json.dumps(EMOTIONS)}
-Return only a valid JSON array."""
+Return only valid JSON in the format: {{"results": [...]}}"""
 
 _CONCURRENCY = int(os.getenv("CLASSIFIER_CONCURRENCY", "5"))
-_POSTS_PER_REQUEST = int(os.getenv("CLASSIFIER_POSTS_PER_REQUEST", "20"))
+_MAX_CHARS_PER_REQUEST = int(os.getenv("CLASSIFIER_MAX_CHARS", "10000"))
 
 
 async def load_models() -> AsyncOpenAI:
@@ -76,6 +76,7 @@ async def classify_batch(posts: list[tuple], client: AsyncOpenAI, semaphore: asy
                 {"role": "system", "content": _SYSTEM_PROMPT},
                 {"role": "user", "content": json.dumps(payload)},
             ],
+            response_format={"type": "json_object"},
             temperature=0,
         )
 
@@ -111,9 +112,22 @@ async def classify_posts() -> None:
     client = await load_models()
     semaphore = asyncio.Semaphore(_CONCURRENCY)
 
-    # Split into per-request chunks, then gather concurrently
-    chunks = [unclassified_post[i:i + _POSTS_PER_REQUEST] for i in range(0, total, _POSTS_PER_REQUEST)]
-    print(f'Sending {len(chunks)} requests ({_POSTS_PER_REQUEST} posts each, {_CONCURRENCY} concurrent)...')
+    # Split into chunks by total character length
+    chunks = []
+    current_chunk = []
+    current_chars = 0
+    for post in unclassified_post:
+        post_chars = len(post[3] or "") + len(post[4] or "")
+        if current_chunk and current_chars + post_chars > _MAX_CHARS_PER_REQUEST:
+            chunks.append(current_chunk)
+            current_chunk = []
+            current_chars = 0
+        current_chunk.append(post)
+        current_chars += post_chars
+    if current_chunk:
+        chunks.append(current_chunk)
+
+    print(f'Sending {len(chunks)} requests ({_CONCURRENCY} concurrent)...')
 
     results = await asyncio.gather(*[classify_batch(chunk, client, semaphore) for chunk in chunks])
 
