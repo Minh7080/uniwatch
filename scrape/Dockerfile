@@ -1,15 +1,13 @@
-FROM python:3.14-slim
+FROM python:3.12-slim
 
 WORKDIR /app
 
 COPY scrape/requirement.txt /app/scrape/requirement.txt
 RUN pip install --no-cache-dir -r /app/scrape/requirement.txt
 
-COPY subreddits.json /app/
+COPY shared/subreddits.json /app/shared/
 COPY scrape/ /app/scrape/
-COPY scrape/certs/global-bundle.pem /certs/global-bundle.pem
-ENV DB_SSLROOTCERT=/certs/global-bundle.pem
 
 WORKDIR /app/scrape
 
-CMD ["python", "src/main.py"]
+CMD ["python", "-u", "src/main.py"]
