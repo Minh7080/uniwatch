@@ -5,10 +5,7 @@ from datetime import datetime
 from typing import TypedDict
 
 import psycopg2
-from dotenv import load_dotenv, find_dotenv
 from post_score import calculate_controversial_score, calculate_hot_score
-
-load_dotenv(find_dotenv())
 
 _db_lock = threading.RLock()
 
@@ -55,13 +52,11 @@ class PostDataEntry(TypedDict, total=False):
     topics: list[str]
 
 connection = psycopg2.connect(
-    host=os.getenv('DB_HOST', 'localhost'),
-    database=os.getenv('DB_NAME', 'reddit'),
-    user=os.getenv('DB_USER', 'postgres'),
-    password=os.getenv('DB_PASS', ''),
-    port=os.getenv('DB_PORT', '5432'),
-    sslmode='verify-full',
-    sslrootcert=os.getenv('DB_SSLROOTCERT')
+    host=os.environ.get('POSTGRES_HOST', 'db'),
+    database=os.environ['POSTGRES_DB'],
+    user=os.environ['POSTGRES_USER'],
+    password=os.environ['POSTGRES_PASSWORD'],
+    port=os.environ.get('DB_PORT', 5432),
 )
 cursor = connection.cursor()
 

@@ -1,0 +1,8 @@
+OPENROUTER_API=ENC[AES256_GCM,data:XxkODe3dza1aM0Q4qhA13EepgDhlx+3DirbKg6cl4ijWKO2yM8PDWA/xfKcIs9GxQIUhjt7pxEQufW0Ngv84wJG/B/EZl6gduQ==,iv:PjU5rsbs7r8PojrXWjtIco00n58hpf0Sk9Q8BuRSN08=,tag:B5ZVyQOMNjPJIYpdGDxt+A==,type:str]
+OPENROUTER_MODEL=ENC[AES256_GCM,data:K9Ovl0oncagNQ3RiSiXDxCGvjEQINVc=,iv:C2wQSFq/9mOBRkpJQ2fN0WK6xe9CduEimzykhxT6qKg=,tag:gwtoOlA+QWhMxj1oHarmXw==,type:str]
+sops_age__list_0__map_enc=-----BEGIN AGE ENCRYPTED FILE-----\nYWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA5M2ZZcE9kS3Nyc0J5V2g0\nNVV2clZNQm0rMEZYc1Jna3ZsTTJNL29tR25nClhMV3VaRWlYTFVqOE5xR3I4YUM5\nM0lmdEN0NUZYMHdIeDM5dUFzUlZYKzQKLS0tIC83RWxuM0MrM2tvQUprQlEyUmQ4\neUYzcWNEWmFJQjhyV0d1SW9NZFlyQW8KVgtyimbcKCBTjN6Q20TkMyNhyYdZZQJ0\nFtVQWtprOx0n280lr+D7T7HH0mXT/NSIXJa1vPD9kazHHTUgJJlkSQ==\n-----END AGE ENCRYPTED FILE-----\n
+sops_age__list_0__map_recipient=age10uvz5vvg2vj5axq7364dmmy47c3s7aaecugqs6c6qqe0gx7904vqkwqga4
+sops_lastmodified=2026-03-31T15:04:24Z
+sops_mac=ENC[AES256_GCM,data:RvlPq5rEbwPL0Wgq1jUxg1Jss6e3jtp/0Iszk9YY78BwxdanYP6J28T/2GCtMm+b91oEji+0b7GTOJFSwrs6IRN7/oSd5TnTw5C+czPpx81Ykci0KW2L4WdpblkIrE7bG10WoFMBS8GN7gp76s6vu4cg030NuYkC7Wy7cxDAFYY=,iv:/oy0KCePtwpQ6f1Zz/X8VCQe4ceFO7EODz1yQLQhTqM=,tag:qFvxzGyzbp2886hSueTjGQ==,type:str]
+sops_unencrypted_suffix=_unencrypted
+sops_version=3.12.2
