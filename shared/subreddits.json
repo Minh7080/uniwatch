@@ -1,5 +1,9 @@
 [
   {
+    "subreddit": "testingground4bots",
+    "name": "testingground4bots"
+  },
+  {
     "subreddit": "UniAdelaide",
     "name": "University of Adelaide"
   },
@@ -148,7 +152,35 @@
     "name": "Western Sydney University"
   },
   {
-    "subreddit": "testingground4bots",
-    "name": "testingground4bots"
+    "subreddit": "AUT",
+    "name": "Auckland University of Technology"
+  },
+  {
+    "subreddit": "LincolnUni",
+    "name": "Lincoln University"
+  },
+  {
+    "subreddit": "masseyuni",
+    "name": "Lincoln University"
+  },
+  {
+    "subreddit": "universityofauckland",
+    "name": "University of Auckland"
+  },
+  {
+    "subreddit": "UCNZ",
+    "name": "University of Canterbury"
+  },
+  {
+    "subreddit": "UniversityofOtago",
+    "name": "University of Otago"
+  },
+  {
+    "subreddit": "UniOfWaikato",
+    "name": "University of Waikato"
+  },
+  {
+    "subreddit": "VUW",
+    "name": "Victoria University of Wellington"
   }
 ]
