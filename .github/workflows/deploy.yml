@@ -13,9 +13,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install SOPS
-        run: |
-          curl -Lo sops https://github.com/getsops/sops/releases/latest/download/sops-v3.9.4.linux.amd64
-          chmod +x sops && sudo mv sops /usr/local/bin/sops
+        uses: getsops/setup-sops@v1
 
       - name: Set up SSH
         run: |
@@ -25,8 +23,7 @@ jobs:
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
       - name: Decrypt .env for upload
-        run: |
-          sops --decrypt secrets.enc.env > .env
+        run: bash env/decrypt_env.sh
         env:
           SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
 
