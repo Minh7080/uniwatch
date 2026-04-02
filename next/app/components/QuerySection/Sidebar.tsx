@@ -4,6 +4,7 @@ import { DateRanges } from "./DateRanges";
 import { LabelCollapsable } from "./LabelCollapsable";
 import { MultiSelection } from "./MultiSelection";
 import { topics } from "./TopicsSelectionData";
+import { emotions } from "./EmotionsSelectionData";
 
 export default function Sidebar() {
   return (
@@ -27,9 +28,8 @@ export default function Sidebar() {
         <MultiSelection list={topics} name="topics"/>
       </LabelCollapsable>
       <Label labelText="Emotions">
-        <div>hello</div>
+        <MultiSelection list={emotions} name="emotions"/>
       </Label>
-
     </form>
   );
 }
