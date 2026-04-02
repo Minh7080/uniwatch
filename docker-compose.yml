@@ -45,5 +45,22 @@ services:
       init-db:
         condition: service_completed_successfully
 
+  next:
+    restart: unless-stopped
+    build:
+      context: ./next
+      dockerfile: Dockerfile
+    env_file:
+      - ./env/db.env
+    environment:
+      - POSTGRES_HOST=db
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      init-db:
+        condition: service_completed_successfully
+
 volumes:
   pgdata:

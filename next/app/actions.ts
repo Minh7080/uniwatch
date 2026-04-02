@@ -7,6 +7,7 @@ export async function getSubreddits(): Promise<[SubredditsTable[] | null, string
     const subreddits = await db.selectFrom("subreddits").selectAll().execute();
     return [subreddits, null];
   } catch (err) {
+    console.error("getSubreddits error:", err);
     const msg = err instanceof Error ? err.message : "Cannot get subreddits. Try again later."
     return [null, msg];
   }
