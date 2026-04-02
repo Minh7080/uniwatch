@@ -43,6 +43,22 @@ export default function Sidebar() {
       <Label labelText="Sentiments">
         <MultiSelection list={sentiments} name="sentiments"/>
       </Label>
+
+      <Label labelText="Hate Speech">
+        <select className="select select-sm" defaultValue="unspecified">
+          <option value="unspecified">Unspecified</option>
+          <option value="true">True</option>
+          <option value="false">False</option>
+        </select>
+      </Label>
+
+      <Label labelText="Offensive Speech">
+        <select className="select select-sm" defaultValue="unspecified">
+          <option value="unspecified">Unspecified</option>
+          <option value="true">True</option>
+          <option value="false">False</option>
+        </select>
+      </Label>
     </form>
   );
 }
