@@ -1,8 +1,9 @@
 "use client"
 import { Label } from "./Label";
 import { DateRanges } from "./DateRanges";
-import { TopicSelection } from "./TopicsSelection";
 import { LabelCollapsable } from "./LabelCollapsable";
+import { MultiSelection } from "./MultiSelection";
+import { topics } from "./TopicsSelectionData";
 
 export default function Sidebar() {
   return (
@@ -23,7 +24,7 @@ export default function Sidebar() {
         <DateRanges />
       </Label>
       <LabelCollapsable labelText="Topics" defaultCollapse={true} triggerChildren={false}>
-        <TopicSelection />
+        <MultiSelection list={topics} name="topics"/>
       </LabelCollapsable>
       <Label labelText="Emotions">
         <div>hello</div>
