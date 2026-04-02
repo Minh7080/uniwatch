@@ -5,6 +5,7 @@ import { LabelCollapsable } from "./LabelCollapsable";
 import { MultiSelection } from "./MultiSelection";
 import { topics } from "./TopicsSelectionData";
 import { emotions } from "./EmotionsSelectionData";
+import { sentiments } from "./SentimentsSelectionData";
 
 export default function Sidebar() {
   return (
@@ -27,8 +28,20 @@ export default function Sidebar() {
       <LabelCollapsable labelText="Topics" defaultCollapse={true} triggerChildren={false}>
         <MultiSelection list={topics} name="topics"/>
       </LabelCollapsable>
+
+      <Label labelText="Irony">
+        <select className="select select-sm" defaultValue="Unspecified">
+          <option value="unspecified">Unspecified</option>
+          <option value="true">True</option>
+          <option value="false">False</option>
+        </select>
+      </Label>
+
       <Label labelText="Emotions">
         <MultiSelection list={emotions} name="emotions"/>
+      </Label>
+      <Label labelText="Sentiments">
+        <MultiSelection list={sentiments} name="sentiments"/>
       </Label>
     </form>
   );
