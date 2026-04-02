@@ -6,11 +6,13 @@ import { MultiSelection } from "./MultiSelection";
 import { topics } from "./TopicsSelectionData";
 import { emotions } from "./EmotionsSelectionData";
 import { sentiments } from "./SentimentsSelectionData";
+import { SourceSelector } from "./SourceSelector";
 
 export default function Sidebar() {
+
   return (
-    <form className="bg-neutral rounded-lg flex-col gap-4 w-xs px-4 py-6 hidden md:flex">
-      <button type="button" className="btn btn-sm w-full cursor-pointer">Sources</button>
+    <form className="bg-neutral rounded-lg flex-col gap-4 w-xs px-4 py-6 hidden md:flex" onSubmit={e => e.preventDefault()}>
+      <SourceSelector />
       <Label labelText="Sort by">
         <select className="select select-sm cursor-pointer" defaultValue="new">
           <option value="new">New</option>
@@ -26,7 +28,7 @@ export default function Sidebar() {
         <DateRanges />
       </Label>
       <LabelCollapsable labelText="Topics" defaultCollapse={true} triggerChildren={false}>
-        <MultiSelection list={topics} name="topics"/>
+        <MultiSelection list={topics} name="topics" />
       </LabelCollapsable>
 
       <Label labelText="Irony">
@@ -38,10 +40,10 @@ export default function Sidebar() {
       </Label>
 
       <Label labelText="Emotions">
-        <MultiSelection list={emotions} name="emotions"/>
+        <MultiSelection list={emotions} name="emotions" />
       </Label>
       <Label labelText="Sentiments">
-        <MultiSelection list={sentiments} name="sentiments"/>
+        <MultiSelection list={sentiments} name="sentiments" />
       </Label>
 
       <Label labelText="Hate Speech">
