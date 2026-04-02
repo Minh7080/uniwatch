@@ -16,14 +16,23 @@ BASE_DIR = Path(__file__).resolve().parent
 SUBREDDITS_JSON_PATH = BASE_DIR.parent / 'shared/subreddits.json'
 
 
+def subredditJsonToDict():
+    with open(SUBREDDITS_JSON_PATH) as f:
+        data = json.load(f)
+        return {item["subreddit"]: item["name"] for item in data}
+
 def subreddit_to_entry(sub) -> SubredditEntry:
     """Build SubredditEntry from asyncpraw Subreddit. Uses display_name as id; image_url from subreddit profile (icon) via API."""
     name = sub.display_name
+    
+    name_dict = subredditJsonToDict()
+
     url = getattr(sub, 'url', None) or f'/r/{name}/'
     if url.startswith('/'):
         url = f'https://www.reddit.com{url}'
     elif not url.startswith('http'):
         url = f'https://www.reddit.com/r/{name}/'
+
     # Subreddit profile image: icon_img is the main icon URL (asyncpraw Subreddit typical attribute)
     icon = getattr(sub, 'icon_img', None) or ''
     community_icon = getattr(sub, 'community_icon', None) or ''
@@ -35,7 +44,7 @@ def subreddit_to_entry(sub) -> SubredditEntry:
         image_url = ''
     return {
         'id': name,
-        'name': name,
+        'name': name_dict[name],
         'subreddit_url': url,
         'image_url': image_url,
     }
