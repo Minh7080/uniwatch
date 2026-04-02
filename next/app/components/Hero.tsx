@@ -17,7 +17,7 @@ export default function Hero() {
         university subreddits
       </h1>
       <p className="text-gray-400 text-center text-base w-full pt-2 max-w-200">
-        Uniwatch continuously collects public Reddit posts from Australian
+        Uniwatch continuously collects and classify public Reddit posts from Australian
         and New Zealand university subreddits, allowing you to query discussions.
       </p>
     </div>
