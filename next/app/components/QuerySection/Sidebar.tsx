@@ -9,10 +9,10 @@ import { sentiments } from "./SentimentsSelectionData";
 
 export default function Sidebar() {
   return (
-    <form className="bg-neutral rounded-lg flex-col gap-4 w-xs px-2 py-4 hidden md:flex">
-      <button type="button" className="btn btn-sm w-full">Sources</button>
+    <form className="bg-neutral rounded-lg flex-col gap-4 w-xs px-4 py-6 hidden md:flex">
+      <button type="button" className="btn btn-sm w-full cursor-pointer">Sources</button>
       <Label labelText="Sort by">
-        <select className="select select-sm" defaultValue="new">
+        <select className="select select-sm cursor-pointer" defaultValue="new">
           <option value="new">New</option>
           <option value="hot">Hot</option>
           <option value="top">Top</option>
@@ -20,7 +20,7 @@ export default function Sidebar() {
         </select>
       </Label>
       <Label labelText="Search">
-        <input type="text" className="input input-sm" placeholder="Search term" />
+        <input type="text" className="input input-sm cursor-text" placeholder="Search term" />
       </Label>
       <Label labelText="Date range">
         <DateRanges />
@@ -30,7 +30,7 @@ export default function Sidebar() {
       </LabelCollapsable>
 
       <Label labelText="Irony">
-        <select className="select select-sm" defaultValue="Unspecified">
+        <select className="select select-sm cursor-pointer" defaultValue="Unspecified">
           <option value="unspecified">Unspecified</option>
           <option value="true">True</option>
           <option value="false">False</option>
@@ -45,7 +45,7 @@ export default function Sidebar() {
       </Label>
 
       <Label labelText="Hate Speech">
-        <select className="select select-sm" defaultValue="unspecified">
+        <select className="select select-sm cursor-pointer" defaultValue="unspecified">
           <option value="unspecified">Unspecified</option>
           <option value="true">True</option>
           <option value="false">False</option>
@@ -53,13 +53,13 @@ export default function Sidebar() {
       </Label>
 
       <Label labelText="Offensive Speech">
-        <select className="select select-sm" defaultValue="unspecified">
+        <select className="select select-sm cursor-pointer" defaultValue="unspecified">
           <option value="unspecified">Unspecified</option>
           <option value="true">True</option>
           <option value="false">False</option>
         </select>
       </Label>
-      <button className="btn btn-lg bg-linear-to-r from-red-500 to-orange-500 text-white opacity-50 hover:opacity-100" type="button">Query</button>
+      <button className="btn btn-lg bg-linear-to-r from-red-500 to-orange-500 text-white opacity-50 hover:opacity-100 cursor-pointer" type="button">Query</button>
     </form>
   );
 }

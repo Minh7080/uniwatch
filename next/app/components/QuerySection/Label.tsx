@@ -15,7 +15,7 @@ export default function Label({ labelText, children, className, triggerChildren 
     <div className={cn("w-full", className)}>
       <
         label
-        className="fieldset-legend text-xs flex flex-col gap-2 items-start w-full"
+        className="fieldset-legend text-xs flex flex-col gap-2 items-start w-full cursor-pointer"
         htmlFor={triggerChildren ? id : undefined}
       >
         {labelText}

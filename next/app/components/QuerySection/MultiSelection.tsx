@@ -10,10 +10,10 @@ function SelectionItem({ topic, value, name }: { topic: string, value: string | 
         type="checkbox"
         id={id}
         value={value}
-        className="size-4"
+        className="size-4 cursor-pointer"
         defaultChecked
       />
-      <label htmlFor={id} className="label text-sm hover:text-secondary">{topic}</label>
+      <label htmlFor={id} className="label text-sm hover:text-secondary cursor-pointer">{topic}</label>
     </div>
   )
 }

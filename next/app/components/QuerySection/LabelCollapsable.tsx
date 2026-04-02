@@ -19,7 +19,7 @@ export default function LabelCollapsable({ labelText, children, className, trigg
     <div className={cn("w-full", className)}>
       <
         label
-        className="fieldset-legend text-xs w-full"
+        className="fieldset-legend text-xs w-full cursor-pointer"
         htmlFor={triggerChildren ? id : undefined}
         onClick={e => {
           e.preventDefault();
