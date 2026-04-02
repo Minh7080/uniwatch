@@ -8,7 +8,7 @@ import { X } from "lucide-react";
 export const SourceSelector = () => {
   const [isSourceModalOpen, setSourceModal] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
-  const subreddits = useSubreddits();
+  const subreddits = useSubreddits()?.filter(x => x.name !== "testingground4bots");
 
   return (
     <>
@@ -28,7 +28,6 @@ export const SourceSelector = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 overflow-y-auto max-h-[calc(100vh-200px)]">
             {
               subreddits?.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
-              .filter(x => x.name !== "testingground4bots")
               .map((x, idx) => (
                 <Activity
                   key={idx}
