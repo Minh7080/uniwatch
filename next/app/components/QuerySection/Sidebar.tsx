@@ -6,7 +6,7 @@ import { MultiSelection } from "./MultiSelection";
 import { topics } from "./TopicsSelectionData";
 import { emotions } from "./EmotionsSelectionData";
 import { sentiments } from "./SentimentsSelectionData";
-import { SourceSelector } from "./SourceSelector";
+import { SourceSelector } from "./SourceSelector/SourceSelector";
 
 export default function Sidebar() {
 

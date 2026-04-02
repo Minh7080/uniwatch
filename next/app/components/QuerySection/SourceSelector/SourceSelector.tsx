@@ -1,7 +1,8 @@
 "use client"
 import { useState } from "react";
-import { Modal } from "../Modal"
+import { Modal } from "../../Modal"
 import { useSubreddits } from "@/app/context/subreddits-context";
+import { SubredditItem } from "./SubredditItem";
 
 export const SourceSelector = () => {
   const [isSourceModalOpen, setSourceModal] = useState<boolean>(false);
@@ -15,7 +16,7 @@ export const SourceSelector = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {
               useSubreddits()?.map((x, idx) => (
-              <p key={idx}>{JSON.stringify(x)}</p>
+                <SubredditItem key={idx} subreddit={x} />
               ))
             }
           </div>
