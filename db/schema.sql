@@ -37,6 +37,10 @@ CREATE TABLE IF NOT EXISTS posts (
     controversial_score DOUBLE PRECISION
 );
 
+-- Migrations: safe to re-run
+ALTER TABLE posts ADD COLUMN IF NOT EXISTS media_metadata JSONB;
+ALTER TABLE posts ADD COLUMN IF NOT EXISTS gallery_data JSONB;
+
 CREATE TABLE IF NOT EXISTS topics (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL UNIQUE

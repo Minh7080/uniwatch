@@ -34,6 +34,8 @@ export async function query(data: QueryPayload, cursor: string | null, limit: nu
         "posts.media",
         "posts.secure_media",
         "posts.preview",
+        "posts.media_metadata",
+        "posts.gallery_data",
         "posts.distinguished",
         "posts.edited",
         "posts.retrieved_at",
