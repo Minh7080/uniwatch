@@ -17,6 +17,7 @@ export default function Sidebar() {
   const subreddits = useSubreddits();
   const {
     register,
+    control,
     handleSubmit,
     watch,
     formState: {
@@ -60,8 +61,8 @@ export default function Sidebar() {
       <Label labelText="Search" error={errors.search}>
         <input type="text" className="input input-sm cursor-text" placeholder="Search term" {...register("search")} />
       </Label>
-      <Label labelText="Date range" error={errors.dateRange as FieldError | undefined}>
-        <DateRanges />
+      <Label labelText="Date range" error={(errors.dateRange?.from ?? errors.dateRange?.to ?? errors.dateRange) as FieldError | undefined}>
+        <DateRanges control={control} />
       </Label>
 
       <LabelCollapsable 

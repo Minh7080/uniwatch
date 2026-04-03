@@ -5,12 +5,11 @@ const querySchema = z.object({
   sort:       z.enum(["new", "top", "hot", "controversial"], {}),
   search:     z.string().optional(),
   dateRange:  z.object({
-    from:     z.string({ error: "Start date is required" }),
-    to:       z.string({ error: "End date is required" }),
+    from:     z.string().min(1, "Start date is required"),
+    to:       z.string().min(1, "End date is required"),
   })
-  .refine((val) => new Date(val.from) <= new Date(val.to), {
+  .refine((val) => !val.from || !val.to || new Date(val.from) <= new Date(val.to), {
     message: "Start date must be before end date",
-    path: ["dateRange"],
   })
   .optional(),
   topics:     z.array(z.string()).min(1, "Select at least one topic").optional(),
