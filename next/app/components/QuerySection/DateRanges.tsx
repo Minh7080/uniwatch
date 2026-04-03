@@ -2,10 +2,10 @@
 import { useState } from "react";
 import { Controller, type Control } from "react-hook-form";
 import Label from "./Label";
-import { type QueryData } from "./queryData";
+import { type QueryData, type QueryPayload } from "./queryData";
 
 type DateRangesProps = {
-  control: Control<QueryData>;
+  control: Control<QueryData, unknown, QueryPayload>;
   id?: string;
 };
 

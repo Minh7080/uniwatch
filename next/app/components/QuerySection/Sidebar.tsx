@@ -8,13 +8,18 @@ import { emotions } from "./EmotionsSelectionData";
 import { sentiments } from "./SentimentsSelectionData";
 import { SourceSelector } from "./SourceSelector/SourceSelector";
 import { useForm } from "react-hook-form";
-import { type QueryData, querySchema } from "./queryData";
+import { useMemo } from "react";
+import { type QueryData, type QueryPayload, createQuerySchema } from "./queryData";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type FieldError } from "react-hook-form";
 import { useSubreddits } from "@/app/context/subreddits-context";
 
 export default function Sidebar() {
   const subreddits = useSubreddits();
+  const schema = useMemo(
+    () => createQuerySchema({ sourcesLength: subreddits?.length ?? 0 }),
+    [subreddits?.length]
+  );
   const {
     register,
     control,
@@ -24,8 +29,8 @@ export default function Sidebar() {
       errors,
       isSubmitting,
     }
-  } = useForm<QueryData>({
-    resolver: zodResolver(querySchema),
+  } = useForm<QueryData, unknown, QueryPayload>({
+    resolver: zodResolver(schema),
     mode: "onChange",
     defaultValues: {
       sources: subreddits?.filter(x => x.name !== "testingground4bots").map(x => x.name) ?? [],
@@ -50,7 +55,7 @@ export default function Sidebar() {
   return (
     <form className="bg-neutral rounded-lg flex-col gap-4 w-xs px-4 py-6 hidden md:flex" onSubmit={handleSubmit(onSubmit)}>
       <SourceSelector register={register} watch={watch} error={errors.sources as FieldError | undefined} />
-      <Label labelText="Sort by" error={errors.sort}>
+      <Label labelText="Sort by" error={errors.sort as FieldError | undefined}>
         <select className="select select-sm cursor-pointer" {...register("sort")}>
           <option value="new">New</option>
           <option value="hot">Hot</option>
@@ -58,7 +63,7 @@ export default function Sidebar() {
           <option value="controversial">Controversial</option>
         </select>
       </Label>
-      <Label labelText="Search" error={errors.search}>
+      <Label labelText="Search" error={errors.search as FieldError | undefined}>
         <input type="text" className="input input-sm cursor-text" placeholder="Search term" {...register("search")} />
       </Label>
       <Label labelText="Date range" error={(errors.dateRange?.from ?? errors.dateRange?.to ?? errors.dateRange) as FieldError | undefined}>
@@ -73,7 +78,7 @@ export default function Sidebar() {
         <MultiSelection list={topics} name="topics" register={register} />
       </LabelCollapsable>
 
-      <Label labelText="Irony" error={errors.irony}>
+      <Label labelText="Irony" error={errors.irony as FieldError | undefined}>
         <select className="select select-sm cursor-pointer">
           <option value="">Unspecified</option>
           <option value="true">True</option>
