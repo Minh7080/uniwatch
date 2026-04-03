@@ -8,12 +8,13 @@ import { emotions } from "./EmotionsSelectionData";
 import { sentiments } from "./SentimentsSelectionData";
 import { SourceSelector } from "./SourceSelector/SourceSelector";
 import { useForm } from "react-hook-form";
-import { useMemo } from "react";
 import { type QueryData, type QueryPayload, createQuerySchema } from "./queryData";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type FieldError } from "react-hook-form";
 import { useSubreddits } from "@/app/context/subreddits-context";
 import { useQuerySchema } from "./useQuerySchema";
+import { query } from "@/app/actions/query";
+import { usePosts } from "@/app/context/posts-context";
 
 export default function Sidebar() {
   const subreddits = useSubreddits();
@@ -47,7 +48,25 @@ export default function Sidebar() {
 
   const selectedTopics = watch("topics");
 
-  const onSubmit = (data: QueryPayload) => {
+  const { cursor, posts, isLoading } = usePosts();
+
+  const onSubmit = async (data: QueryPayload) => {
+    isLoading.set(isSubmitting);
+    cursor.set(null);
+    const [result, err] = await query(data, null)
+
+    if (err) {
+      console.log(err);
+    }
+
+    if (result && typeof result === "object") {
+      const { data, nextCursor } = result;
+      console.log(data);
+      posts.set(data);
+      cursor.set(nextCursor)
+    }
+
+    isLoading.set(isSubmitting);
   };
 
   return (
@@ -68,8 +87,8 @@ export default function Sidebar() {
         <DateRanges control={control} />
       </Label>
 
-      <LabelCollapsable 
-        labelText={`Topics (${selectedTopics?.length ?? 0}/${topics.length})`} 
+      <LabelCollapsable
+        labelText={`Topics (${selectedTopics?.length ?? 0}/${topics.length})`}
         defaultCollapse={true} triggerChildren={false}
         error={errors.topics as FieldError | undefined}
       >

@@ -3,7 +3,7 @@ import { db } from "@/utils/db";
 import { sql } from "kysely";
 import { QueryPayload } from "../components/QuerySection/queryData";
 
-export async function query(data: QueryPayload, cursor: string, limit: number = 100) {
+export async function query(data: QueryPayload, cursor: string | null, limit: number = 100) {
   try {
     let statement = db
       .selectFrom("posts")
@@ -161,7 +161,7 @@ export async function query(data: QueryPayload, cursor: string, limit: number = 
       ).toString("base64url");
     }
 
-    return JSON.stringify({ data: rows, nextCursor });
+    return [{ data: rows, nextCursor }, null];
   } catch (err) {
     console.error("query error:", err);
     const msg = err instanceof Error ? err.message : "Cannot query posts. Try again later."
