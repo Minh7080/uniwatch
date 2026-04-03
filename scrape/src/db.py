@@ -39,6 +39,8 @@ class PostEntry(TypedDict, total=False):
     media: dict | list | None
     secure_media: dict | list | None
     preview: dict | list | None
+    media_metadata: dict | None
+    gallery_data: dict | None
     distinguished: str | None
     edited: bool | None
 
@@ -218,7 +220,7 @@ def _prepare_post_entry(post_entry: PostEntry) -> dict:
     db_entry['subreddit_id'] = subreddit_id  # type: ignore
     db_entry.pop('subreddit_name', None)  # type: ignore
 
-    for key in ('media', 'secure_media', 'preview'):
+    for key in ('media', 'secure_media', 'preview', 'media_metadata', 'gallery_data'):
         if key in db_entry and db_entry[key] is not None:
             db_entry[key] = json.dumps(db_entry[key])  # type: ignore
         else:
@@ -300,14 +302,14 @@ def insert_posts_batch(entries: list[PostEntry]) -> None:
                         id, subreddit_id, author, title, selftext, url, permalink,
                         score, upvote_ratio, num_comments, created_utc, is_self, is_video,
                         over_18, spoiler, stickied, locked, flair_text, thumbnail,
-                        media, secure_media, preview, distinguished, edited,
-                        hot_score, controversial_score
+                        media, secure_media, preview, media_metadata, gallery_data,
+                        distinguished, edited, hot_score, controversial_score
                     ) VALUES (
                         %(id)s, %(subreddit_id)s, %(author)s, %(title)s, %(selftext)s, %(url)s, %(permalink)s,
                         %(score)s, %(upvote_ratio)s, %(num_comments)s, %(created_utc)s, %(is_self)s, %(is_video)s,
                         %(over_18)s, %(spoiler)s, %(stickied)s, %(locked)s, %(flair_text)s, %(thumbnail)s,
-                        %(media)s, %(secure_media)s, %(preview)s, %(distinguished)s, %(edited)s,
-                        %(hot_score)s, %(controversial_score)s
+                        %(media)s, %(secure_media)s, %(preview)s, %(media_metadata)s, %(gallery_data)s,
+                        %(distinguished)s, %(edited)s, %(hot_score)s, %(controversial_score)s
                     )
                     ON CONFLICT (id) DO UPDATE SET
                         subreddit_id = EXCLUDED.subreddit_id,
@@ -331,6 +333,8 @@ def insert_posts_batch(entries: list[PostEntry]) -> None:
                         media = EXCLUDED.media,
                         secure_media = EXCLUDED.secure_media,
                         preview = EXCLUDED.preview,
+                        media_metadata = EXCLUDED.media_metadata,
+                        gallery_data = EXCLUDED.gallery_data,
                         distinguished = EXCLUDED.distinguished,
                         edited = EXCLUDED.edited,
                         hot_score = EXCLUDED.hot_score,

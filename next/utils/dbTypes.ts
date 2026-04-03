@@ -33,6 +33,8 @@ export interface PostsTable {
   media: JsonColumn | null;
   secure_media: JsonColumn | null;
   preview: JsonColumn | null;
+  media_metadata: JsonColumn | null;
+  gallery_data: JsonColumn | null;
   distinguished: string | null;
   edited: boolean | null;
   retrieved_at: TimestampColumn;
@@ -83,6 +85,8 @@ export interface ResponseView {
   media: unknown | null;
   secure_media: unknown | null;
   preview: unknown | null;
+  media_metadata: unknown | null;
+  gallery_data: unknown | null;
   distinguished: string | null;
   edited: boolean | null;
   retrieved_at: Date;
