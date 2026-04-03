@@ -70,7 +70,7 @@ export default function Sidebar() {
   };
 
   return (
-    <form className="bg-neutral rounded-lg flex-col gap-4 w-xs px-4 py-6 hidden md:flex" onSubmit={handleSubmit(onSubmit)}>
+    <form className="bg-neutral rounded-lg flex-col gap-4 w-120 px-4 py-6 hidden md:flex self-start" onSubmit={handleSubmit(onSubmit)}>
       <SourceSelector register={register} watch={watch} error={errors.sources as FieldError | undefined} />
       <Label labelText="Sort by" error={errors.sort as FieldError | undefined}>
         <select className="select select-sm cursor-pointer" {...register("sort")}>
@@ -125,7 +125,7 @@ export default function Sidebar() {
           <option value="false">False</option>
         </select>
       </Label>
-      <button className="btn btn-lg bg-linear-to-r from-red-500 to-orange-500 text-white opacity-50 hover:opacity-100 cursor-pointer" type="submit">Query</button>
+      <button className="btn bg-linear-to-r from-red-500 to-orange-500 text-white opacity-50 hover:opacity-100 cursor-pointer" type="submit">Query</button>
     </form>
   );
 }

@@ -28,12 +28,18 @@ CREATE TABLE IF NOT EXISTS posts (
     media JSONB,
     secure_media JSONB,
     preview JSONB,
+    media_metadata JSONB,
+    gallery_data JSONB,
     distinguished TEXT,
     edited BOOLEAN,
     retrieved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     hot_score DOUBLE PRECISION,
     controversial_score DOUBLE PRECISION
 );
+
+-- Migrations: safe to re-run
+ALTER TABLE posts ADD COLUMN IF NOT EXISTS media_metadata JSONB;
+ALTER TABLE posts ADD COLUMN IF NOT EXISTS gallery_data JSONB;
 
 CREATE TABLE IF NOT EXISTS topics (
     id SERIAL PRIMARY KEY,
@@ -109,6 +115,8 @@ SELECT
     posts.media,
     posts.secure_media,
     posts.preview,
+    posts.media_metadata,
+    posts.gallery_data,
     posts.distinguished,
     posts.edited,
     posts.retrieved_at,

@@ -41,6 +41,8 @@ def _post_to_entry(post) -> PostEntry:
     media = serialize_media(getattr(post, "media", None))
     secure_media = serialize_media(getattr(post, "secure_media", None))
     preview = serialize_media(getattr(post, "preview", None))
+    media_metadata = serialize_media(getattr(post, "media_metadata", None))
+    gallery_data = serialize_media(getattr(post, "gallery_data", None))
     return {
         "id": post.id,
         "subreddit_name": str(post.subreddit),
@@ -64,6 +66,8 @@ def _post_to_entry(post) -> PostEntry:
         "media": media,
         "secure_media": secure_media,
         "preview": preview,
+        "media_metadata": media_metadata,
+        "gallery_data": gallery_data,
         "distinguished": str(post.distinguished) if hasattr(post, "distinguished") and post.distinguished else None,
         "edited": bool(post.edited) if hasattr(post, "edited") else None,
     }
