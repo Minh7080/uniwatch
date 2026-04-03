@@ -13,18 +13,17 @@ import { type QueryData, type QueryPayload, createQuerySchema } from "./queryDat
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type FieldError } from "react-hook-form";
 import { useSubreddits } from "@/app/context/subreddits-context";
+import { useQuerySchema } from "./useQuerySchema";
 
 export default function Sidebar() {
   const subreddits = useSubreddits();
-  const schema = useMemo(
-    () => createQuerySchema({ sourcesLength: subreddits?.length ?? 0 }),
-    [subreddits?.length]
-  );
+  const schema = useQuerySchema();
   const {
     register,
     control,
     handleSubmit,
     watch,
+    getValues,
     formState: {
       errors,
       isSubmitting,
@@ -33,7 +32,7 @@ export default function Sidebar() {
     resolver: zodResolver(schema),
     mode: "onChange",
     defaultValues: {
-      sources: subreddits?.filter(x => x.name !== "testingground4bots").map(x => x.name) ?? [],
+      sources: subreddits?.map(x => x.name) ?? [],
       sort: "new",
       search: "",
       dateRange: undefined,
@@ -48,8 +47,7 @@ export default function Sidebar() {
 
   const selectedTopics = watch("topics");
 
-  const onSubmit = () => {
-
+  const onSubmit = (data: QueryPayload) => {
   };
 
   return (
@@ -79,7 +77,7 @@ export default function Sidebar() {
       </LabelCollapsable>
 
       <Label labelText="Irony" error={errors.irony as FieldError | undefined}>
-        <select className="select select-sm cursor-pointer">
+        <select className="select select-sm cursor-pointer" {...register("irony")}>
           <option value="">Unspecified</option>
           <option value="true">True</option>
           <option value="false">False</option>
@@ -94,7 +92,7 @@ export default function Sidebar() {
       </Label>
 
       <Label labelText="Hate Speech" error={errors.hateSpeech as FieldError | undefined}>
-        <select className="select select-sm cursor-pointer">
+        <select className="select select-sm cursor-pointer" {...register("hateSpeech")}>
           <option value="">Unspecified</option>
           <option value="true">True</option>
           <option value="false">False</option>
@@ -102,7 +100,7 @@ export default function Sidebar() {
       </Label>
 
       <Label labelText="Offensive Speech" error={errors.offensive as FieldError | undefined}>
-        <select className="select select-sm cursor-pointer">
+        <select className="select select-sm cursor-pointer" {...register("offensive")}>
           <option value="">Unspecified</option>
           <option value="true">True</option>
           <option value="false">False</option>

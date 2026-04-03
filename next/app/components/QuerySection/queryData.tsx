@@ -12,11 +12,23 @@ const stringToBoolean = z.string().transform(val => {
 const arrToUndefined = <T extends z.ZodTypeAny>(schema: T, getAllLength: () => number) =>
   z.array(schema).transform(val => val.length >= getAllLength() ? undefined : val);
 
-export const createQuerySchema = (options: { sourcesLength: number }) =>
+type CreateSchemaOptions = {
+  sourcesLength: number, 
+  topicsLength: number, 
+  emotionsLength: number, 
+  sentimentLength: number 
+}
+
+export const createQuerySchema = (options: CreateSchemaOptions) =>
   z.object({
-    sources: arrToUndefined(z.string(), () => options.sourcesLength).pipe(z.array(z.string()).min(1, "Select at least one source").optional()),
+    sources: z.array(z.string()).min(1, "Select at least one source")
+    .pipe(arrToUndefined(z.string(), () => options.sourcesLength))
+    .optional(),
+    
     sort: z.enum(["new", "top", "hot", "controversial"], {}),
+
     search: emptyToUndefined.pipe(z.string().optional()),
+
     dateRange: z.object({
       from: z.string().min(1, "Start date is required"),
       to: z.string().min(1, "End date is required"),
@@ -25,10 +37,21 @@ export const createQuerySchema = (options: { sourcesLength: number }) =>
         message: "Start date must be before end date",
       })
       .optional(),
-    topics: z.array(z.string()).min(1, "Select at least one topic").optional(),
+
+    topics: z.array(z.string()).min(1, "Select at least one topic")
+    .pipe(arrToUndefined(z.string(), () => options.topicsLength))
+    .optional(),
+
     irony: stringToBoolean.pipe(z.boolean().optional()),
-    emotions: z.array(z.string()).min(1, "Select at least one emotion").optional(),
-    sentiments: z.array(z.string()).min(1, "Select at lest one sentiment").optional(),
+
+    emotions: z.array(z.string()).min(1, "Select at least one emotion")
+    .pipe(arrToUndefined(z.string(), () => options.emotionsLength))
+    .optional(),
+
+    sentiments: z.array(z.string()).min(1, "Select at lest one sentiment")
+    .pipe(arrToUndefined(z.string(), () => options.sentimentLength))
+    .optional(),
+
     hateSpeech: stringToBoolean.pipe(z.boolean().optional()),
     offensive: stringToBoolean.pipe(z.boolean().optional()),
   });

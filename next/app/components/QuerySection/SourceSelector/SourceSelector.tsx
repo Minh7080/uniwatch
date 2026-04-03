@@ -17,7 +17,7 @@ type SourceSelectorProps = {
 export const SourceSelector = ({ register, watch, error }: SourceSelectorProps) => {
   const [isSourceModalOpen, setSourceModal] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
-  const subreddits = useSubreddits()?.filter(x => x.name !== "testingground4bots");
+  const subreddits = useSubreddits();
   const sources = watch("sources");
 
   return (
