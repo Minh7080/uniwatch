@@ -41,5 +41,7 @@ export function PostsProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function usePosts() {
-  return useContext(PostsContext);
+  const context = useContext(PostsContext);
+  if (!context) throw new Error("usePosts must be used within a PostsProvider")
+  return context;
 }
