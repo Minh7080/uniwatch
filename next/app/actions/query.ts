@@ -57,7 +57,7 @@ export async function query(data: QueryPayload, cursor: string | null, limit: nu
       .groupBy(["posts.id", "subreddits.id", "post_data.post_id"]);
 
     if (data.sources && data.sources.length > 0) {
-      statement = statement.where("posts.subreddit_id", "in", data.sources);
+      statement = statement.where("subreddits.name", "in", data.sources);
     }
 
     if (data.dateRange) {
