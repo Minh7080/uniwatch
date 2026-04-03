@@ -1,6 +1,6 @@
 import { SubredditsProvider } from "@/app/context/subreddits-context";
 import Sidebar from "./Sidebar";
-import { getSubreddits } from "@/app/actions";
+import { getSubreddits } from "@/app/actions/getSubreddits";
 import { PostsProvider } from "@/app/context/posts-context";
 
 export default async function QuerySection() {
