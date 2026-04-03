@@ -21,7 +21,7 @@ export const SourceSelector = () => {
           <div className="flex justify-between items-center pb-4 border-b">
             <h1 className="text-xl font-bold">Select University Subreddits (0/{subreddits?.length})</h1>
             <input type="text" className="input input-sm" placeholder="Search" onChange={e => setSearch(e.target.value)}/>
-            <button className="btn btn-circle btn-error btn-ghost" onClick={() => setSourceModal(false)}>
+            <button className="btn btn-circle btn-xs btn-error btn-ghost" onClick={() => setSourceModal(false)}>
               <X/>
             </button>
           </div>
