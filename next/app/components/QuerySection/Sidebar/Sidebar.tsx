@@ -48,11 +48,12 @@ export default function Sidebar() {
 
   const selectedTopics = watch("topics");
 
-  const { cursor, posts, isLoading } = usePosts();
+  const { cursor, posts, isLoading, queryPayload } = usePosts();
 
   const onSubmit = async (data: QueryPayload) => {
-    isLoading.set(isSubmitting);
+    isLoading.set(true);
     cursor.set(null);
+    queryPayload.set(data);
     const [result, err] = await query(data, null)
 
     if (err) {
@@ -60,13 +61,12 @@ export default function Sidebar() {
     }
 
     if (result && typeof result === "object") {
-      const { data, nextCursor } = result;
-      console.log(data);
-      posts.set(data);
+      const { data: rows, nextCursor } = result;
+      posts.set(rows);
       cursor.set(nextCursor)
     }
 
-    isLoading.set(isSubmitting);
+    isLoading.set(false);
   };
 
   return (

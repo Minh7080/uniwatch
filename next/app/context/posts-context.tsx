@@ -2,11 +2,13 @@
 
 import { createContext, useContext, useState } from "react";
 import { ResponseView as Post } from "@/utils/dbTypes";
+import { QueryPayload } from "../components/QuerySection/Sidebar/queryData";
 
 type PostsContextType = {
   posts: {
     get: Post[] | null,
     set: React.Dispatch<React.SetStateAction<Post[] | null>>,
+    append: (newPosts: Post[]) => void,
   }
 
   cursor: {
@@ -18,6 +20,11 @@ type PostsContextType = {
     get: boolean,
     set: React.Dispatch<React.SetStateAction<boolean>>;
   }
+
+  queryPayload: {
+    get: QueryPayload | null,
+    set: React.Dispatch<React.SetStateAction<QueryPayload | null>>;
+  }
 };
 
 const PostsContext = createContext<PostsContextType | null>(null);
@@ -26,11 +33,13 @@ export function PostsProvider({ children }: { children: React.ReactNode }) {
   const [posts, setPosts] = useState<Post[] | null>(null);
   const [cursor, setCursor] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [queryPayload, setQueryPayload] = useState<QueryPayload | null>(null);
 
   const value: PostsContextType = {
-    posts:     { get: posts,     set: setPosts },
-    cursor:    { get: cursor,    set: setCursor },
-    isLoading: { get: isLoading, set: setIsLoading },
+    posts:        { get: posts, set: setPosts, append: (newPosts) => setPosts(prev => [...(prev ?? []), ...newPosts]) },
+    cursor:       { get: cursor,       set: setCursor },
+    isLoading:    { get: isLoading,    set: setIsLoading },
+    queryPayload: { get: queryPayload, set: setQueryPayload },
   };
 
   return (
