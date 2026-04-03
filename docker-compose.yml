@@ -62,5 +62,21 @@ services:
       init-db:
         condition: service_completed_successfully
 
+  caddy:
+    restart: unless-stopped
+    image: caddy:latest
+    ports:
+      - 80:80
+      - 443:443
+      - 443:443/udp
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - next
+
 volumes:
   pgdata:
+  caddy_data:
+  caddy_config:
