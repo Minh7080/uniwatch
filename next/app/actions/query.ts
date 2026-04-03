@@ -3,13 +3,7 @@ import { db } from "@/utils/db";
 import { sql } from "kysely";
 import { QueryPayload } from "../components/QuerySection/queryData";
 
-type QueryArgsType = {
-  data: QueryPayload,
-  cursor?: string,
-  limit?: number
-};
-
-export async function query({data, cursor, limit = 100}: QueryArgsType) {
+export async function query(data: QueryPayload, cursor: string, limit: number = 100) {
   try {
     let statement = db
       .selectFrom("posts")
