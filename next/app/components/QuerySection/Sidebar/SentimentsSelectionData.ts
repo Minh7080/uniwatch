@@ -1,14 +1,14 @@
 export const sentiments = [
   {
-    value: "positive",
+    value: "Positive",
     topic: "Positive",
   },
   {
-    value: "neutral",
+    value: "Neutral",
     topic: "Neutral",
   },
   {
-    value: "negative",
+    value: "Negative",
     topic: "Negative",
   },
 ];
