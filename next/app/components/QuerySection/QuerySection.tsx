@@ -1,5 +1,5 @@
 import { SubredditsProvider } from "@/app/context/subreddits-context";
-import Sidebar from "./Sidebar";
+import Sidebar from "./Sidebar/Sidebar";
 import { getSubreddits } from "@/app/actions/getSubreddits";
 import { PostsProvider } from "@/app/context/posts-context";
 

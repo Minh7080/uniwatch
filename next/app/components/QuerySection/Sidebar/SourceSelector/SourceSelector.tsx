@@ -1,6 +1,6 @@
 "use client"
 import { Activity, useState } from "react";
-import { Modal } from "../../Modal"
+import { Modal } from "../../../Modal"
 import { useSubreddits } from "@/app/context/subreddits-context";
 import { SubredditItem } from "./SubredditItem";
 import { X } from "lucide-react";
