@@ -163,10 +163,10 @@ export async function query(data: QueryPayload, cursor: string | null, limit: nu
       ).toString("base64url");
     }
 
-    return [{ data: rows, nextCursor }, null];
+    return [{ data: rows, nextCursor }, null] as const;
   } catch (err) {
     console.error("query error:", err);
     const msg = err instanceof Error ? err.message : "Cannot query posts. Try again later."
-    return [null, msg];
+    return [null, msg] as const;
   }
 };
