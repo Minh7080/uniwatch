@@ -40,6 +40,8 @@ export default function Sidebar() {
     },
   });
 
+  const selectedTopics = watch("topics");
+
   const onSubmit = () => {
 
   };
@@ -47,25 +49,30 @@ export default function Sidebar() {
   return (
     <form className="bg-neutral rounded-lg flex-col gap-4 w-xs px-4 py-6 hidden md:flex" onSubmit={handleSubmit(onSubmit)}>
       <SourceSelector register={register} watch={watch} error={errors.sources as FieldError | undefined} />
-      <Label labelText="Sort by">
-        <select className="select select-sm cursor-pointer">
+      <Label labelText="Sort by" error={errors.sort}>
+        <select className="select select-sm cursor-pointer" {...register("sort")}>
           <option value="new">New</option>
           <option value="hot">Hot</option>
           <option value="top">Top</option>
           <option value="controversial">Controversial</option>
         </select>
       </Label>
-      <Label labelText="Search">
-        <input type="text" className="input input-sm cursor-text" placeholder="Search term" />
+      <Label labelText="Search" error={errors.search}>
+        <input type="text" className="input input-sm cursor-text" placeholder="Search term" {...register("search")} />
       </Label>
-      <Label labelText="Date range">
+      <Label labelText="Date range" error={errors.dateRange as FieldError | undefined}>
         <DateRanges />
       </Label>
-      <LabelCollapsable labelText="Topics" defaultCollapse={true} triggerChildren={false}>
-        <MultiSelection list={topics} name="topics" />
+
+      <LabelCollapsable 
+        labelText={`Topics (${selectedTopics?.length ?? 0}/${topics.length})`} 
+        defaultCollapse={true} triggerChildren={false}
+        error={errors.topics as FieldError | undefined}
+      >
+        <MultiSelection list={topics} name="topics" register={register} />
       </LabelCollapsable>
 
-      <Label labelText="Irony">
+      <Label labelText="Irony" error={errors.irony}>
         <select className="select select-sm cursor-pointer">
           <option value="">Unspecified</option>
           <option value="true">True</option>
@@ -73,14 +80,14 @@ export default function Sidebar() {
         </select>
       </Label>
 
-      <Label labelText="Emotions">
-        <MultiSelection list={emotions} name="emotions" />
+      <Label labelText="Emotions" error={errors.emotions as FieldError | undefined}>
+        <MultiSelection list={emotions} name="emotions" register={register} />
       </Label>
-      <Label labelText="Sentiments">
-        <MultiSelection list={sentiments} name="sentiments" />
+      <Label labelText="Sentiments" error={errors.sentiments as FieldError | undefined}>
+        <MultiSelection list={sentiments} name="sentiments" register={register} />
       </Label>
 
-      <Label labelText="Hate Speech">
+      <Label labelText="Hate Speech" error={errors.hateSpeech as FieldError | undefined}>
         <select className="select select-sm cursor-pointer">
           <option value="">Unspecified</option>
           <option value="true">True</option>
@@ -88,7 +95,7 @@ export default function Sidebar() {
         </select>
       </Label>
 
-      <Label labelText="Offensive Speech">
+      <Label labelText="Offensive Speech" error={errors.offensive as FieldError | undefined}>
         <select className="select select-sm cursor-pointer">
           <option value="">Unspecified</option>
           <option value="true">True</option>

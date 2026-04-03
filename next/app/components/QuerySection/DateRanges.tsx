@@ -18,11 +18,11 @@ export default function DateRanges() {
       {
         selectValue === "custom" && (
           <div className="flex w-full gap-2">
-            <Label labelText="From">
+            <Label labelText="From" error={undefined}>
               <input type="date" className="input input-sm w-full cursor-pointer" />
             </Label>
 
-            <Label labelText="To">
+            <Label labelText="To" error={undefined}>
               <input type="date" className="input input-sm w-full cursor-pointer" />
             </Label>
           </div>

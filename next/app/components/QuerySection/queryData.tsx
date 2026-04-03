@@ -10,10 +10,10 @@ const querySchema = z.object({
   })
   .refine((val) => new Date(val.from) <= new Date(val.to), {
     message: "Start date must be before end date",
-    path: ["from"],
+    path: ["dateRange"],
   })
   .optional(),
-  topics:     z.array(z.string()).min(1, "Selet at least one topic").optional(),
+  topics:     z.array(z.string()).min(1, "Select at least one topic").optional(),
   irony:      z.string().optional(),
   emotions:   z.array(z.string()).min(1, "Select at least one emotion").optional(),
   sentiments: z.array(z.string()).min(1, "Select at lest one sentiment").optional(),
