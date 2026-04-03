@@ -11,7 +11,6 @@ function SelectionItem({ topic, value, name }: { topic: string, value: string | 
         id={id}
         value={value}
         className="size-4 cursor-pointer"
-        defaultChecked
       />
       <label htmlFor={id} className="label text-sm hover:text-secondary cursor-pointer">{topic}</label>
     </div>
