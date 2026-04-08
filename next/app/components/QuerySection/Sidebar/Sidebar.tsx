@@ -125,7 +125,14 @@ export default function Sidebar() {
           <option value="false">False</option>
         </select>
       </Label>
-      <button className="btn bg-linear-to-r from-red-500 to-orange-500 text-white opacity-50 hover:opacity-100 cursor-pointer" type="submit">Query</button>
+      <button 
+        className="btn bg-linear-to-r from-red-500 to-orange-500 text-white opacity-50 hover:opacity-100 cursor-pointer" 
+        type="submit" 
+        disabled={isSubmitting}
+        ref={queryBtnRef}
+      >
+        Query
+      </button>
     </form>
   );
 }
