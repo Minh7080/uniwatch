@@ -19,7 +19,7 @@ export const PostsContainer = () => {
       cursor.set(result.nextCursor);
     }
     isLoading.set(false);
-  }, [cursor.get, isLoading.get, queryPayload.get]);
+  }, [cursor, isLoading, posts, queryPayload.get]);
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
