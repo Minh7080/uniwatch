@@ -2,9 +2,11 @@ import Image from "next/image"
 import FileIcon from "@/public/file.svg"
 import { ResponseView } from "@/utils/dbTypes"
 import { REDDIT_BASE, timeAgo } from "./postUtils"
+import { ExternalLink } from "lucide-react"
 
 export const PostHeader = ({ data }: { data: ResponseView }) => {
   const subredditHref = `${REDDIT_BASE}/r/${data.subreddit_id}`
+  const permalink = data.permalink ? `${REDDIT_BASE}${data.permalink}` : undefined
 
   return (
     <div className="flex items-center gap-2 px-3 pt-3 pb-2">
@@ -46,6 +48,18 @@ export const PostHeader = ({ data }: { data: ResponseView }) => {
           <span className="text-xs font-medium text-yellow-400 bg-yellow-400/10 px-1.5 py-0.5 rounded-full">Locked</span>
         )}
       </div>
+
+      <a 
+        className="bg-base-content/8 text-xs font-medium px-1.5 py-0.5 rounded-full flex items-center gap-1 group cursor-pointer"
+        href={permalink}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <ExternalLink size={16} />
+        <span className="underline hidden group-hover:inline">
+          Source
+        </span>
+      </a>
     </div>
   )
 }
