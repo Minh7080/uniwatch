@@ -2,6 +2,7 @@ import { ResponseView } from "@/utils/dbTypes"
 import { isValidThumbnail } from "./postUtils"
 import { PostImageCarousel } from "./PostImageCarousel"
 import Markdown from "react-markdown"
+import cn from "@/utils/cn"
 
 type CarouselImage = { url: string; width: number; height: number }
 
@@ -29,22 +30,53 @@ function getPreviewImage(preview: unknown): CarouselImage | null {
     if (!src?.url) return null
     return { url: src.url.replace(/&amp;/g, "&"), width: src.width, height: src.height }
   } catch {
-    return null
+    return null;
   }
 }
 
-export const PostBody = ({ data }: { data: ResponseView }) => {
+function getVideo(video: unknown): CarouselImage | null {
+  try {
+    const v = video as {
+      secure_media: {
+        reddit_video: {
+          dash_url: string;
+          fallback_url: string,
+          hls_url: string,
+          width: number,
+          height: number,
+        }
+      }
+    }
+
+    const reddit_video = v?.secure_media?.reddit_video || undefined;
+    const src = reddit_video?.hls_url ?? reddit_video?.fallback_url ?? reddit_video?.dash_url;
+    if (!src) return null;
+    return { url: src, width: reddit_video.width, height: reddit_video.height }
+  } catch {
+    return null;
+  }
+}
+
+export const PostBody = ({ data, isExpanded }: { data: ResponseView, isExpanded: boolean }) => {
+  const video = data.is_video ? getVideo(data) : null;
   const galleryImages = getGalleryImages(data.media_metadata, data.gallery_data)
   const previewImage = galleryImages.length === 0 ? getPreviewImage(data.preview) : null
   const fallbackThumbnail = previewImage === null && isValidThumbnail(data.thumbnail)
     ? [{ url: data.thumbnail!, width: 640, height: 320 }]
-    : []
+    : [];
 
-  const images: CarouselImage[] = galleryImages.length > 0
-    ? galleryImages
-    : previewImage
-    ? [previewImage]
-    : fallbackThumbnail
+  const images: CarouselImage[] = (() => {
+    if (video) return [video]
+    if (galleryImages.length > 0) return galleryImages;
+    if (previewImage) return [previewImage];
+    return fallbackThumbnail;
+  })();
+
+  // galleryImages.length > 0
+  //   ? galleryImages
+  //   : previewImage
+  //     ? [previewImage]
+  //     : fallbackThumbnail
 
   return (
     <div className="block px-3">
@@ -62,11 +94,11 @@ export const PostBody = ({ data }: { data: ResponseView }) => {
 
       {/* Selftext preview */}
       {data.is_self && data.selftext && (
-        <div className="text-sm text-base-content/55 line-clamp-3 leading-relaxed mb-2">
+        <div className={cn("text-sm text-base-content/55 leading-relaxed mb-2", isExpanded ? "" : "line-clamp-3")}>
           <Markdown
             components={{
               p: ({ children }) => <span>{children} </span>,
-              a: ({href, children}) => (
+              a: ({ href, children }) => (
                 <
                   a
                   href={href}

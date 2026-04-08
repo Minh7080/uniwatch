@@ -25,14 +25,25 @@ export const PostImageCarousel = ({ images, title, isVideo }: Props) => {
 
   return (
     <div className="relative w-full rounded-xl overflow-hidden bg-base-300 mb-2">
-      <Image
-        src={current.url}
-        alt={`${title} — ${index + 1} of ${images.length}`}
-        width={current.width || 960}
-        height={current.height || 540}
-        quality={90}
-        className="object-contain w-full max-h-120"
-      />
+      {
+        isVideo
+          ? (
+            <video 
+              src={current.url} 
+              controls
+              className="object-contain w-full max-h-120"
+            />
+          ) : (
+            <Image
+              src={current.url}
+              alt={`${title} — ${index + 1} of ${images.length}`}
+              width={current.width || 960}
+              height={current.height || 540}
+              quality={90}
+              className="object-contain w-full max-h-120"
+            />
+          )
+      }
 
       {isVideo && isSingle && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
