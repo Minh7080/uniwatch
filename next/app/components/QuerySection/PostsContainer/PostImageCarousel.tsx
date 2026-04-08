@@ -15,6 +15,10 @@ type Props = {
   isVideo: boolean | null
 }
 
+const blurDataURL = `data:image/svg+xml;base64,${Buffer.from(
+  '<svg xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#e0e0e0"/></svg>'
+).toString('base64')}`
+
 export const PostImageCarousel = ({ images, title, isVideo }: Props) => {
   const [index, setIndex] = useState(0)
 
@@ -41,6 +45,8 @@ export const PostImageCarousel = ({ images, title, isVideo }: Props) => {
               height={current.height || 540}
               quality={90}
               className="object-contain w-full max-h-120"
+              placeholder="blur"
+              blurDataURL={blurDataURL}
             />
           )
       }
