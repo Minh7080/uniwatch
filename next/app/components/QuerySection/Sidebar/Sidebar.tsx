@@ -137,7 +137,10 @@ export default function Sidebar() {
         disabled={isSubmitting}
         ref={queryBtnRef}
       >
-        Query
+        {isSubmitting 
+          ? <span className="loading loading-spinner loading-sm"></span>
+          : "Query"
+        }
       </button>
     </form>
   );
