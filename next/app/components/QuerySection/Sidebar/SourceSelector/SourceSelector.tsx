@@ -28,18 +28,20 @@ export const SourceSelector = ({ register, watch, error }: SourceSelectorProps) 
       </button>
 
       <Modal open={isSourceModalOpen} onClose={() => setSourceModal(false)}>
-        <div className="bg-base-100 py-6 px-4 flex flex-col rounded-2xl w-238 h-240">
-          <div className="flex justify-between items-center pb-4 border-b">
-            <div>
-              <h1 className="text-xl font-bold">Select University Subreddits ({sources ? sources.length : "0"}/{subreddits ? subreddits.length : "0"})</h1>
-              {error && (<FieldErrorMessage message={error.message}/>)}
+        <div className="bg-base-100 py-6 px-4 flex flex-col rounded-2xl w-[95vw] max-w-238 h-[90vh]">
+          <div className="flex flex-wrap gap-x-4 gap-y-2 justify-between items-center pb-4 border-b">
+            <h1 className="text-sm md:text-md lg:text-lg xl:text-xl font-bold">
+              Subreddits ({sources ? sources.length : "0"}/{subreddits ? subreddits.length : "0"})
+            </h1>
+            <div className="flex gap-2 items-center ml-auto">
+              <input type="text" className="input input-sm w-36 sm:w-48" placeholder="Search" onChange={e => setSearch(e.target.value)} />
+              <button className="btn btn-circle btn-xs btn-error btn-ghost shrink-0" onClick={() => setSourceModal(false)}>
+                <X />
+              </button>
             </div>
-            <input type="text" className="input input-sm" placeholder="Search" onChange={e => setSearch(e.target.value)} />
-            <button className="btn btn-circle btn-xs btn-error btn-ghost" onClick={() => setSourceModal(false)}>
-              <X />
-            </button>
+            {error && (<FieldErrorMessage message={error.message}/>)}
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 overflow-y-auto max-h-[calc(100vh-200px)]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 overflow-y-auto flex-1 content-start">
             {
               subreddits?.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
                 .map((x, idx) => (

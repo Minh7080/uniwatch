@@ -1,4 +1,5 @@
 import { Activity, useEffect } from "react";
+import Portal from "./Portal";
 
 type ModalProps = {
   open: boolean,
@@ -20,11 +21,13 @@ export const Modal = ({ open, children, onClose }: ModalProps) => {
   }, [open]);
 
   return (
-    <Activity mode={open ? "visible" : "hidden"}>
-      <div className="fixed inset-0 z-1000 backdrop-blur-2xl bg-black/40" onClick={onClose} />
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-1000">
-        {children}
-      </div>
-    </Activity>
+    <Portal>
+      <Activity mode={open ? "visible" : "hidden"}>
+        <div className="fixed inset-0 z-1000 backdrop-blur-2xl bg-black/40" onClick={onClose} />
+        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-1000">
+          {children}
+        </div>
+      </Activity>
+    </Portal>
   )
 }
