@@ -49,11 +49,12 @@ export const PostHeader = ({ data }: { data: ResponseView }) => {
         )}
       </div>
 
-      <a 
+      <a
         className="bg-base-content/8 text-xs font-medium px-1.5 py-0.5 rounded-full flex items-center gap-1 group cursor-pointer"
         href={permalink}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={e => e.stopPropagation()}
       >
         <ExternalLink size={16} />
         <span className="underline hidden group-hover:inline text-secondary">
