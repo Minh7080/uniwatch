@@ -1,6 +1,7 @@
 import { ResponseView } from "@/utils/dbTypes"
-import { REDDIT_BASE, isValidThumbnail } from "./postUtils"
+import { isValidThumbnail } from "./postUtils"
 import { PostImageCarousel } from "./PostImageCarousel"
+import Markdown from "react-markdown"
 
 type CarouselImage = { url: string; width: number; height: number }
 
@@ -33,8 +34,6 @@ function getPreviewImage(preview: unknown): CarouselImage | null {
 }
 
 export const PostBody = ({ data }: { data: ResponseView }) => {
-  const permalink = data.permalink ? `${REDDIT_BASE}${data.permalink}` : undefined
-
   const galleryImages = getGalleryImages(data.media_metadata, data.gallery_data)
   const previewImage = galleryImages.length === 0 ? getPreviewImage(data.preview) : null
   const fallbackThumbnail = previewImage === null && isValidThumbnail(data.thumbnail)
@@ -48,7 +47,7 @@ export const PostBody = ({ data }: { data: ResponseView }) => {
     : fallbackThumbnail
 
   return (
-    <a href={permalink} target="_blank" rel="noopener noreferrer" className="block px-3">
+    <div className="block px-3">
       {/* Flair */}
       {data.flair_text && (
         <span className="inline-block text-xs text-base-content/60 bg-base-content/8 px-2 py-0.5 rounded-full mb-1.5 max-w-xs truncate">
@@ -63,13 +62,31 @@ export const PostBody = ({ data }: { data: ResponseView }) => {
 
       {/* Selftext preview */}
       {data.is_self && data.selftext && (
-        <p className="text-sm text-base-content/55 line-clamp-3 leading-relaxed mb-2">
-          {data.selftext}
-        </p>
+        <div className="text-sm text-base-content/55 line-clamp-3 leading-relaxed mb-2">
+          <Markdown
+            components={{
+              p: ({ children }) => <span>{children} </span>,
+              a: ({href, children}) => (
+                <
+                  a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={e => e.stopPropagation()}
+                >
+                  {children}
+                </a>
+              )
+
+            }}
+          >
+            {data.selftext}
+          </Markdown>
+        </div>
       )}
 
       {/* Image / carousel */}
       <PostImageCarousel images={images} title={data.title} isVideo={data.is_video} />
-    </a>
+    </div>
   )
 }
