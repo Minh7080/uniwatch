@@ -32,10 +32,10 @@ export const PostsContainer = () => {
   }, [loadMore]);
 
   return (
-    <div className="w-full min-w-0 rounded-lg overflow-clip">
+    <div className="flex-1 rounded-xl overflow-clip">
       {posts.get && posts.get.map((post, idx) => <Post key={idx} data={post} />)}
       {isLoading.get && (
-        <div className="flex justify-center py-4">
+        <div className="flex justify-center py-4 w-full">
           <span className="loading loading-spinner loading-md" />
         </div>
       )}
