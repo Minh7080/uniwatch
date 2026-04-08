@@ -24,7 +24,7 @@ export const PostHeader = ({ data }: { data: ResponseView }) => {
           target="_blank"
           rel="noopener noreferrer"
           onClick={e => e.stopPropagation()}
-          className="font-semibold text-base-content/90 hover:underline"
+          className="font-semibold text-base-content/90 hover:underline hover:text-secondary"
         >
           r/{data.subreddit_id}
         </a>
@@ -56,7 +56,7 @@ export const PostHeader = ({ data }: { data: ResponseView }) => {
         rel="noopener noreferrer"
       >
         <ExternalLink size={16} />
-        <span className="underline hidden group-hover:inline">
+        <span className="underline hidden group-hover:inline text-secondary">
           Source
         </span>
       </a>
