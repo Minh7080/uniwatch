@@ -8,13 +8,14 @@ import { emotions } from "./EmotionsSelectionData";
 import { sentiments } from "./SentimentsSelectionData";
 import { SourceSelector } from "./SourceSelector/SourceSelector";
 import { useForm } from "react-hook-form";
-import { type QueryData, type QueryPayload, createQuerySchema } from "./queryData";
+import { type QueryData, type QueryPayload } from "./queryData";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type FieldError } from "react-hook-form";
 import { useSubreddits } from "@/app/context/subreddits-context";
 import { useQuerySchema } from "./useQuerySchema";
 import { query } from "@/app/actions/query";
 import { usePosts } from "@/app/context/posts-context";
+import { useEffect, useRef } from "react";
 
 export default function Sidebar() {
   const subreddits = useSubreddits();
@@ -24,7 +25,6 @@ export default function Sidebar() {
     control,
     handleSubmit,
     watch,
-    getValues,
     formState: {
       errors,
       isSubmitting,
@@ -68,6 +68,12 @@ export default function Sidebar() {
 
     isLoading.set(false);
   };
+
+  const queryBtnRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    queryBtnRef.current?.click();
+  }, []);
 
   return (
     <form className="bg-neutral rounded-lg flex-col gap-4 w-120 px-4 py-6 hidden md:flex self-start" onSubmit={handleSubmit(onSubmit)}>
