@@ -16,6 +16,7 @@ import { useQuerySchema } from "./useQuerySchema";
 import { query } from "@/app/actions/query";
 import { usePosts } from "@/app/context/posts-context";
 import { useEffect, useRef } from "react";
+import toast from "react-hot-toast";
 
 export default function Sidebar() {
   const subreddits = useSubreddits();
@@ -57,7 +58,7 @@ export default function Sidebar() {
     const [result, err] = await query(data, null)
 
     if (err) {
-      console.log(err);
+      toast.error(err);
     }
 
     if (result && typeof result === "object") {

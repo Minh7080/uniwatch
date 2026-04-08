@@ -5,7 +5,8 @@ import { PostsProvider } from "@/app/context/posts-context";
 import { PostsContainer } from "./PostsContainer/PostsContainer";
 
 export default async function QuerySection() {
-  const [subreddits] = await getSubreddits();
+  const [subreddits, err] = await getSubreddits();
+  if (err) console.error(err);
   return (
     <SubredditsProvider subreddits={subreddits}>
       <PostsProvider>

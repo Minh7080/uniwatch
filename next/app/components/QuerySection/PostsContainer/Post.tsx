@@ -7,7 +7,6 @@ import { useState } from "react"
 
 export const Post = ({ data }: { data: ResponseView }) => {
   const [isExpanded, setExpanded] = useState<boolean>(false);
-  console.log(data);
   return (
     <article 
       className="bg-neutral border border-base-content/8 overflow-hidden hover:border-base-content/20 transition-colors cursor-pointer"
