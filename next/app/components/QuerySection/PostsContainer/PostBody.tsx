@@ -3,6 +3,7 @@ import { isValidThumbnail } from "./postUtils"
 import { PostImageCarousel } from "./PostImageCarousel"
 import Markdown from "react-markdown"
 import cn from "@/utils/cn"
+import remarkGfm from "remark-gfm"
 
 type CarouselImage = { url: string; width: number; height: number }
 
@@ -95,21 +96,11 @@ export const PostBody = ({ data, isExpanded }: { data: ResponseView, isExpanded:
       {/* Selftext preview */}
       {data.is_self && data.selftext && (
         <div className={cn("text-sm text-base-content/55 leading-relaxed mb-2", isExpanded ? "" : "line-clamp-3")}>
-          <Markdown
+          <
+            Markdown 
+            remarkPlugins={[remarkGfm]}
             components={{
-              p: ({ children }) => <span>{children} </span>,
-              a: ({ href, children }) => (
-                <
-                  a
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={e => e.stopPropagation()}
-                >
-                  {children}
-                </a>
-              )
-
+              p: ({children}) => <p className="mb-1">{children}</p>
             }}
           >
             {data.selftext}
