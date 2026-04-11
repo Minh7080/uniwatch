@@ -3,6 +3,7 @@ import { isValidThumbnail } from "./postUtils"
 import { PostImageCarousel } from "./PostImageCarousel"
 import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
+import { Target } from "lucide-react"
 
 type CarouselImage = { url: string; width: number; height: number }
 
@@ -88,12 +89,22 @@ export const PostBody = ({ data }: { data: ResponseView }) => {
 
       {/* Selftext preview */}
       {data.is_self && data.selftext && (
-        <div className={"text-sm text-base-content/55 leading-relaxed"}>
+        <div className={"mb-2 text-sm text-base-content/55 leading-relaxed"}>
           <
-            Markdown 
+            Markdown
             remarkPlugins={[remarkGfm]}
             components={{
-              p: ({children}) => <p className="mb-1">{children}</p>
+              p: ({ children }) => <p className="mb-1">{children}</p>,
+              a: ({ href, children }) => (
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="link link-secondary"
+                >
+                  {children}
+                </a>
+              )
             }}
           >
             {data.selftext}
