@@ -3,17 +3,14 @@ import { PostHeader } from "./PostHeader"
 import { PostBody } from "./PostBody"
 import { PostNlpTags } from "./PostNlpTags"
 import { PostActionBar } from "./PostActionBar"
-import { useState } from "react"
 
 export const Post = ({ data }: { data: ResponseView }) => {
-  const [isExpanded, setExpanded] = useState<boolean>(false);
   return (
     <article 
-      className="bg-neutral border border-base-content/8 overflow-hidden hover:border-base-content/20 transition-colors cursor-pointer"
-      onClick={() => setExpanded(prev => !prev)}
+      className="bg-neutral border border-base-content/8 overflow-hidden hover:border-base-content/20 transition-colors"
     >
       <PostHeader data={data} />
-      <PostBody data={data} isExpanded={isExpanded} />
+      <PostBody data={data} />
       <PostNlpTags
         sentiment={data.sentiment}
         emotion={data.emotion}

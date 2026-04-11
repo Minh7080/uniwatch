@@ -2,7 +2,6 @@ import { ResponseView } from "@/utils/dbTypes"
 import { isValidThumbnail } from "./postUtils"
 import { PostImageCarousel } from "./PostImageCarousel"
 import Markdown from "react-markdown"
-import cn from "@/utils/cn"
 import remarkGfm from "remark-gfm"
 
 type CarouselImage = { url: string; width: number; height: number }
@@ -58,7 +57,7 @@ function getVideo(video: unknown): CarouselImage | null {
   }
 }
 
-export const PostBody = ({ data, isExpanded }: { data: ResponseView, isExpanded: boolean }) => {
+export const PostBody = ({ data }: { data: ResponseView }) => {
   const video = data.is_video ? getVideo(data) : null;
   const galleryImages = getGalleryImages(data.media_metadata, data.gallery_data)
   const previewImage = galleryImages.length === 0 ? getPreviewImage(data.preview) : null
@@ -89,7 +88,7 @@ export const PostBody = ({ data, isExpanded }: { data: ResponseView, isExpanded:
 
       {/* Selftext preview */}
       {data.is_self && data.selftext && (
-        <div className={cn("text-sm text-base-content/55 leading-relaxed mb-2", isExpanded ? "" : "line-clamp-3")}>
+        <div className={"text-sm text-base-content/55 leading-relaxed"}>
           <
             Markdown 
             remarkPlugins={[remarkGfm]}
