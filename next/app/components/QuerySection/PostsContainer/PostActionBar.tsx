@@ -13,7 +13,7 @@ export const PostActionBar = ({ score, num_comments, permalink, author }: Props)
       <div className="flex items-center gap-1 bg-base-content/8 rounded-full px-2 py-1">
         <button
           onClick={e => e.stopPropagation()}
-          className="text-base-content/50 hover:text-orange-400 transition-colors"
+          className="text-base-content/50 hover:text-orange-400 transition-colors cursor-pointer"
           aria-label="Upvote"
         >
           <ArrowUp className="size-4" />
@@ -21,7 +21,7 @@ export const PostActionBar = ({ score, num_comments, permalink, author }: Props)
         <span className="text-xs font-bold tabular-nums min-w-5 text-center">{formatScore(score)}</span>
         <button
           onClick={e => e.stopPropagation()}
-          className="text-base-content/50 hover:text-blue-400 transition-colors"
+          className="text-base-content/50 hover:text-blue-400 transition-colors cursor-pointer"
           aria-label="Downvote"
         >
           <ArrowDown className="size-4" />
