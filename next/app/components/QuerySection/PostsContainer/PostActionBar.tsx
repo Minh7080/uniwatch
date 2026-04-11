@@ -42,7 +42,7 @@ export const PostActionBar = ({ score, num_comments, permalink, author }: Props)
 
       {/* Author */}
       {author && (
-        <span className="ml-auto text-xs text-base-content/35 truncate max-w-32">u/{author}</span>
+        <span className="ml-auto text-xs text-base-content/35 truncate">u/{author}</span>
       )}
     </div>
   )
