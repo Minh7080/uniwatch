@@ -51,16 +51,6 @@ export const PostImageCarousel = ({ images, title, isVideo }: Props) => {
           )
       }
 
-      {isVideo && isSingle && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="size-12 rounded-full bg-black/50 flex items-center justify-center">
-            <svg className="size-5 text-white fill-white ml-0.5" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-          </div>
-        </div>
-      )}
-
       {!isSingle && (
         <>
           <button

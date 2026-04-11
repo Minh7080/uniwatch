@@ -73,12 +73,6 @@ export const PostBody = ({ data, isExpanded }: { data: ResponseView, isExpanded:
     return fallbackThumbnail;
   })();
 
-  // galleryImages.length > 0
-  //   ? galleryImages
-  //   : previewImage
-  //     ? [previewImage]
-  //     : fallbackThumbnail
-
   return (
     <div className="block px-3">
       {/* Flair */}
